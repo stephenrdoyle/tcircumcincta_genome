@@ -1,0 +1,76 @@
+# LCMB test
+
+- performed sequnecing of libraries from 2-fold dilution series of T. circumcinta DNA to determine
+limits of LCMB protocol
+
+SANGER SAMPLE ID	SUPPLIER SAMPLE NAME	REFERENCE GENOME	COHORT	VOLUME (ul)	CONC. (ng/ul)
+2679STDY8120456	MTci2 Brood 11669-B5 + body 08-07-19_1				64.564
+2679STDY8120457	MTci2 Brood 11669-B5 + body 08-07-19_2				30.593
+2679STDY8120458	MTci2 Brood 11669-B5 + body 08-07-19_3				15.538
+2679STDY8120459	MTci2 Brood 11669-B5 + body 08-07-19_4				7.509
+2679STDY8120460	MTci2 Brood 11669-B5 + body 08-07-19_5				3.382
+2679STDY8120461	MTci2 Brood 11669-B5 + body 08-07-19_6				1.444
+2679STDY8120462	MTci2 Brood 11669-B5 + body 08-07-19_7				0.686
+2679STDY8120463	MTci2 Brood 11669-B5 + body 08-07-19_8				0.423
+2679STDY8120464	MTci2 Brood 11669-B5 + body 08-07-19_9				0.284
+2679STDY8120465	MTci2 Brood 11669-B5 + body 08-07-19_10				0.161
+
+
+```shell
+
+mkdir /nfs/users/nfs_s/sd21/lustre118_link/hc/LCMB_TEST
+
+pathfind -t lane -i 31350_1 -l ./ --rename
+
+
+# extract kraken data - top three classified per sample
+for i in $(ls -1dv 31350_1*) ; do NAME=$(echo ${i}) ; KRAKEN=$( cat ${i}/kraken* | grep -v "#" | sort -k1rn | head -n3 ); echo -e "$NAME\t$KRAKEN" ; done
+```
+#--- result
+331350_1_1	 72.08	1183752	1183752	U	0	unclassified
+ 27.92	458416	11061	-	1	root
+ 26.91	441879	405	-	131567	  cellular organisms
+31350_1_2	 72.99	1303633	1303633	U	0	unclassified
+ 27.01	482500	7873	-	1	root
+ 26.30	469750	464	-	131567	  cellular organisms
+31350_1_3	 72.29	1186506	1186506	U	0	unclassified
+ 27.71	454740	5984	-	1	root
+ 27.09	444636	345	-	131567	  cellular organisms
+31350_1_4	 71.88	893890	893890	U	0	unclassified
+ 28.12	349674	15730	-	1	root
+ 26.39	328128	319	-	131567	  cellular organisms
+31350_1_5	 72.56	1155984	1155984	U	0	unclassified
+ 27.44	437192	20284	-	1	root
+ 25.68	409111	376	-	131567	  cellular organisms
+31350_1_6	 71.50	1101531	1101531	U	0	unclassified
+ 28.50	439017	41288	-	1	root
+ 24.93	384065	410	-	131567	  cellular organisms
+31350_1_7	 71.91	689230	689230	U	0	unclassified
+ 28.09	269243	26109	-	1	root
+ 24.53	235113	245	-	131567	  cellular organisms
+31350_1_8	 61.26	682743	682743	U	0	unclassified
+ 38.74	431837	141775	-	1	root
+ 22.63	252184	586	-	131567	  cellular organisms
+31350_1_9	 61.52	503673	503673	U	0	unclassified
+ 38.48	315017	105307	-	1	root
+ 22.20	181743	204	-	131567	  cellular organisms
+31350_1_10	 60.00	525200	294427	-	1	root
+ 40.00	350163	350163	U	0	unclassified
+ 18.65	163295	347	-	131567	  cellular organismsd
+
+- getting about 70% unclassified (likely tcirc) from each sample, with come degree of contamination. makes sense as these larvae were picked from plates as far as I am aware.
+- only last 3 dilutions starting to be affected, and only the very last one is poor (library conc = 0.161 ng/ul ).
+
+
+# run fastaq and multiqc to look at sequence quality
+ ```shell
+rm * -r
+
+pathfind -t lane -i 31350_1 -l ./ --filetype fastq --rename
+
+~sd21/bash_scripts/run_fastqc
+
+```
+
+- Multiqc shows sample 10 affected by sequence bias, skewed GC content and higher adaptors. samples 8 an 9 somwhat so, but to a much lesser extent.
+- all other samples are fine.  
