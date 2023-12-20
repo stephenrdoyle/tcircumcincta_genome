@@ -678,17 +678,38 @@ gt gff3 -force -tidy -sort -o Annotations.tc2.4.gt.gff3 Annotations.tc2.4.gff3
 
 bedtools subtract -A -s -a braker_augustus.2.4.gt.gff3 -b Annotations.gt.gff3 | awk '{if($3=="gene") print $9}' | sed 's/ID=//g' > gene_ids_to_keep.list
 
+#--- TEST FIX
+bedtools subtract -A -s -a braker_augustus.2.4.gt.gff3 -b Annotations.tc2.4.gt.gff3 | awk '{if($3=="gene") print $9}' | sed 's/ID=//g' > test.gene_ids_to_keep.list
+
 
 # filter the data
 conda activate agat
 
 /nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/AGAT/bin/agat_sp_filter_feature_from_keep_list.pl --gff braker_augustus.2.4.gt.gff3 --keep_list gene_ids_to_keep.list --output braker_augustus.2.4.minus.curated.gff3
 
+#--- TEST FIX
+/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/AGAT/bin/agat_sp_filter_feature_from_keep_list.pl --gff braker_augustus.2.4.gt.gff3 --keep_list test.gene_ids_to_keep.list --output test.braker_augustus.2.4.minus.curated.gff3
+
+
+
 # add start and stops
 /nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/AGAT/bin/agat_sp_add_start_and_stop.pl --gff braker_augustus.2.4.minus.curated.gff3 --fasta teladorsagia_circumcincta_tci2_wsi2.4.fa --out braker_augustus.2.4.minus.curated_start-stop-fix.gff3
 
+
+
+
+
 # merge braker+augustus with apollo
 gt gff3 -tidy -sort -force -o braker_augustus.apollo.2.4.gff3 braker_augustus.2.4.minus.curated_start-stop-fix.gff3 Annotations.tc2.4.gt.gff3
+
+#--- TEST FIX
+gt gff3 -tidy -sort -force -o test.braker_augustus.apollo.2.4.gff3 test.braker_augustus.2.4.minus.curated.gff3 Annotations.tc2.4.gt.gff3
+
+
+
+
+
+
 
 # sort
 cat braker_augustus.apollo.2.4.gff3 | sort -k1,1 -k4,4n > braker_augustus.apollo.2.4.sorted.gff3
@@ -883,3 +904,283 @@ cat IPS_OUT/*tsv > ips_collated.tsv
 agat_sp_manage_functional_annotation.pl -f braker_augustus.apollo.2.4.clean.gff3 -i ips_collated.tsv --output braker_augustus.apollo.2.4.ips
 
 
+
+
+
+
+
+
+
+####----- TESTING
+
+
+cat test.gene_ids_to_keep.list |\
+    while read geneID; do 
+        grep "${geneID}$" braker_augustus.2.4.gt.gff3 |\
+        grep "mRNA" | cut -f9 | sed -e 's/ID=//g' -e 's/;Parent=/\t/g' ; 
+    done > test.orignal.mrna.gene.list
+
+
+mkdir kept_gene_models
+
+while read mrna gene; do
+    > kept_gene_models/${gene}_${mrna}.model.gff
+    #gene
+    grep "ID=${gene}$" test.braker_augustus.2.4.minus.curated.gff3 >> kept_gene_models/${gene}_${mrna}.model.gff
+    #mrna
+    grep "ID=${mrna};" test.braker_augustus.2.4.minus.curated.gff3 >> kept_gene_models/${gene}_${mrna}.model.gff
+    #body
+    grep "${mrna}$" test.braker_augustus.2.4.minus.curated.gff3 >> kept_gene_models/${gene}_${mrna}.model.gff
+
+done < test.orignal.mrna.gene.list
+
+
+
+
+cat kept_gene_models/* |\
+    sed -e 's/=mRNA/=b.mRNA/g' -e 's/=gene/=b.gene/g' > kept_models.gff3 
+
+cat Annotations.tc2.4.gt.gff3 |\
+    sed -e 's/=mRNA/=a.mRNA/g' -e 's/=gene/=a.gene/g' > updated.models.gff3
+
+cat kept_models.gff3 updated.models.gff3 | sort | uniq | sort -k1,1 -k4,4n > test.new_annotation.gff
+
+gt gff3 -tidy -sort -force -o test.new_annotation.gt.gff test.new_annotation.gff
+
+cat test.new_annotation.gt.gff | sort -k1,1 -k4,4n | bgzip > test.new_annotation.gt.gff.gz
+
+
+#- generate protein sequences from gff
+agat_sp_extract_sequences.pl -g test.new_annotation.gt.gff -f teladorsagia_circumcincta_tci2_wsi2.4.fa -p --output test.new_annotation.gt.proteins.fa
+
+
+
+
+# finding genes with internal stop codons
+fastaq to_fasta -l 0 test.new_annotation.gt.proteins.fa test.new_annotation.gt.proteins.l0.fa
+
+cat test.new_annotation.gt.proteins.l0.fa | sed 's/\*$//g' | grep -A1 "\*" | grep ">" > genes_w_stops.list
+
+cat genes_w_stops.list | sed 's/>//g' | while read MRNA GENE SEQ TYPE; do 
+    grep "ID=${MRNA};" test.new_annotation.gt.gff; 
+    done
+
+
+
+# download and transfer apollo annotations
+scp Annotations_R2.gff3.gz sd21@farm5-head2:/lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/BRAKER_V_AUGUSTUS/
+gunzip Annotations_R2.gff3.gz
+
+
+cat Annotations_R2.gff3 | cut -f3 | sort | uniq -c | grep -v "#"
+   6276 CDS
+   6446 exon
+    580 gene
+    631 mRNA
+     88 non_canonical_five_prime_splice_site
+     35 non_canonical_three_prime_splice_site
+
+
+grep -w -f teladorsagia_circumcincta_tci2_wsi2.4.names Annotations_R2.gff3  > Annotations_R2.tc2.4.gff3 
+
+gt gff3 -force -tidy -sort -o Annotations_R2.tc2.4.gt.gff3 Annotations_R2.tc2.4.gff3
+
+cat Annotations_R2.tc2.4.gt.gff3 | cut -f3 | sort | uniq -c | grep -v "#"
+   5857 CDS
+   6023 exon
+    541 gene
+    590 mRNA
+     82 non_canonical_five_prime_splice_site
+     34 non_canonical_three_prime_splice_site
+
+
+bedtools subtract -A -s -a test.new_annotation.gt.gff -b Annotations_R2.tc2.4.gt.gff3 | awk -F '[\t;]' '{if($3=="gene") print $9}' | sed 's/ID=//g' > R2.gene_ids_to_keep.list
+
+# extract the gene coords from both annotations, and then compare with bedtools subtract
+# cat test.new_annotation.gt.gff | awk '{if($3=="gene") print}' > test.new_annotation.gt.gff.genes
+# cat Annotations_R2.tc2.4.gt.gff3  | awk '{if($3=="gene") print}' > Annotations_R2.tc2.4.gt.gff3.genes
+
+
+
+
+wc -l R2.gene_ids_to_keep.list
+22963 R2.gene_ids_to_keep.list
+
+
+cat R2.gene_ids_to_keep.list |\
+    while read geneID; do 
+        grep "${geneID}$" test.new_annotation.gt.gff |\
+        grep "mRNA" | cut -f9 | sed -e 's/ID=//g' -e 's/;Parent=/\t/g' ; 
+    done > R2.orignal.mrna.gene.list
+
+
+mkdir R2.kept_gene_models
+
+while read mrna gene; do
+    > R2.kept_gene_models/${gene}_${mrna}.model.gff
+    #gene
+    grep "ID=${gene}$" test.new_annotation.gt.gff >> R2.kept_gene_models/${gene}_${mrna}.model.gff
+    #mrna
+    grep "ID=${mrna};" test.new_annotation.gt.gff >> R2.kept_gene_models/${gene}_${mrna}.model.gff
+    #body
+    grep "${mrna}$" test.new_annotation.gt.gff >> R2.kept_gene_models/${gene}_${mrna}.model.gff
+
+done < R2.orignal.mrna.gene.list
+
+
+cat R2.kept_gene_models/* |\
+    sed -e 's/=mRNA/=b.mRNA/g' -e 's/=gene/=b.gene/g' > R2.kept_models.gff3 
+
+cat Annotations_R2.tc2.4.gt.gff3 |\
+    sed -e 's/=mRNA/=a.mRNA/g' -e 's/=gene/=a.gene/g' > R2.updated.models.gff3
+
+cat R2.kept_models.gff3 R2.updated.models.gff3 | sort | uniq | sort -k1,1 -k4,4n > R2.new_annotation.gff
+
+gt gff3 -tidy -sort -force -o R2.new_annotation.gt.gff R2.new_annotation.gff
+
+cat R2.new_annotation.gt.gff | sort -k1,1 -k4,4n | bgzip > R2.new_annotation.gt.gff.gz
+
+tabix R2.new_annotation.gt.gff.gz
+
+cut -f3 R2.new_annotation.gt.gff | grep -v "#" | sort | uniq -c
+ 413747 CDS
+ 413913 exon
+  22399 gene
+ 308653 intron
+  36182 mRNA
+     82 non_canonical_five_prime_splice_site
+     34 non_canonical_three_prime_splice_site
+  28212 start_codon
+  28212 stop_codon
+
+
+
+agat_sp_add_start_and_stop.pl --gff R2.new_annotation.gt.gff --fasta teladorsagia_circumcincta_tci2_wsi2.4.fa --out R2.new_annotation.gt.start.stop.gff
+
+
+
+
+
+
+# renaming GFF
+
+# STEP 1 - generate using IDs for each gene
+# - extract gene name from lines in gff matching gene|GENE
+# - remove surrounding characters
+# - sort by gene ID and remove duplicates
+# - print new gene id (species prefix with 8 digit ID that increases by 10 for each gene), and old gene id
+
+gff=R2.new_annotation.gt.start.stop.gff
+species_prefix=TCIR_
+
+awk -F'[\t;]' '{if($3=="gene" || $3=="GENE") print $9}' ${gff} | sed -e 's/ID=//g' -e 's/\;//g' | sort -V | uniq | awk -v species_prefix="$species_prefix" '{fmt=species_prefix"%08d\t%s\n"; printf fmt,NR*10,$0}' > genes_renames.list
+
+
+# correct gene IDs
+cp ${gff} ${gff}.tmp
+
+while read new_gene old_gene; do 
+    sed -i \
+    -e "s/ID=${old_gene}$/ID=${new_gene}/g" \
+    -e "s/ID=${old_gene}\;/ID=${new_gene}\;/g" \
+    -e "s/Parent=${old_gene}$/Parent=${new_gene}/g" \
+    -e "s/Parent=${old_gene}\;/Parent=${new_gene}\;/g" \
+    ${gff}.tmp; 
+done < genes_renames.list
+
+
+# fix mRNA IDs
+cat ${gff}.tmp | grep "mRNA" | awk -F '[\t;]' '{if($3=="mRNA") print $9,$10}' OFS="\t" | sed -e 's/ID=//g' -e 's/Parent=//g' > mRNA_gene_IDs.list
+
+#- add transcript identifiers
+>mRNA_IDs_NAMEs_transcriptIDs.txt
+cut -f2 mRNA_gene_IDs.list | sort | uniq | while read -r GENE; do 
+    grep -w ${GENE} mRNA_gene_IDs.list | cat -n | awk '{print $2,$3,$3"-0000"$1}' OFS="\t" >> mRNA_IDs_NAMEs_transcriptIDs.txt; 
+    done
+
+# substitute mRNA ids
+while read mRNA_id gene_id transcript_id; do 
+    sed -i \
+    -e "s/ID=${mRNA_id}$/ID=${transcript_id}/g" \
+    -e "s/ID=${mRNA_id}\;/ID=${transcript_id}\;/g" \
+    -e "s/Parent=${mRNA_id}$/Parent=${transcript_id}/g" \
+    -e "s/Parent=${mRNA_id}\;/Parent=${transcript_id}\;/g" \
+    ${gff}.tmp; 
+done < mRNA_IDs_NAMEs_transcriptIDs.txt
+
+
+agat_sp_manage_attributes.pl -gff R2.new_annotation.gt.start.stop.gff.tmp -p level1,level2 --att ID/Name,date_creation,date_last_modified,orig_id,owner --cp --overwrite --out R2.new_annotation.gt.updatenames.gff.tmp
+
+mv R2.new_annotation.gt.updatenames.gff.tmp braker.augustus.apollo.2.4.2.renamed.gff3
+
+
+
+
+
+
+
+
+#- generate protein sequences from gff
+agat_sp_extract_sequences.pl -g braker.augustus.apollo.2.4.2.renamed.gff3  -f teladorsagia_circumcincta_tci2_wsi2.4.fa -p --output braker.augustus.apollo.2.4.2.renamed.proteins.fa
+
+
+
+
+# finding genes with internal stop codons
+fastaq to_fasta -l 0 braker.augustus.apollo.2.4.2.renamed.proteins.fa braker.augustus.apollo.2.4.2.renamed.proteins.l0.fa
+
+cat braker.augustus.apollo.2.4.2.renamed.proteins.l0.fa | sed 's/\*$//g' | grep -A1 "\*" | grep ">" > genes_w_stops.list
+
+cat genes_w_stops.list | sed 's/>//g' | while read MRNA GENE SEQ TYPE; do 
+    grep "ID=${MRNA};" braker.augustus.apollo.2.4.2.renamed.gff3; 
+    done
+
+
+
+cat braker.augustus.apollo.2.4.2.renamed.gff3 |\
+    grep -v "TCIR_00076170" |\
+    grep -v "TCIR_00192170" |\
+    grep -v "TCIR_00192180" > braker.augustus.apollo.2.4.2.renamed.gff3.tmp
+
+
+
+cat braker.augustus.apollo.2.4.2.renamed.gff3.tmp | sort -k1,1 -k4,4n | bgzip > braker.augustus.apollo.2.4.2.renamed.gff3.gz
+tabix braker.augustus.apollo.2.4.2.renamed.gff3.gz
+
+
+
+
+
+# generate protein sequences from gff
+agat_sp_extract_sequences.pl -g braker.augustus.apollo.2.4.2.renamed.gff3.tmp  -f teladorsagia_circumcincta_tci2_wsi2.4.fa -p --output braker.augustus.apollo.2.4.2.renamed.proteins.fa
+
+
+# check protein completeness of original, and filtered for longest isoform
+
+#-extract longest isoforms from GFF, and then create proteins
+
+agat_sp_keep_longest_isoform.pl -gff braker.augustus.apollo.2.4.2.renamed.gff3.tmp  -out braker.augustus.apollo.2.4.2.renamed.longest-isoform.gff3
+
+agat_sp_extract_sequences.pl -g braker.augustus.apollo.2.4.2.renamed.longest-isoform.gff3  -f teladorsagia_circumcincta_tci2_wsi2.4.fa -p --output braker.augustus.apollo.2.4.2.renamed.proteins.longest-isoform.fa
+
+
+#- run busco
+conda activate busco_5.4.3
+bsub.py --queue long --threads 20 40 busco_combined "busco --in braker.augustus.apollo.2.4.2.renamed.proteins.fa --out braker.augustus.apollo.2.4.2.renamed.proteins --mode protein --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"
+
+bsub.py --queue long --threads 20 40 busco_combined_longest "busco --in braker.augustus.apollo.2.4.2.renamed.proteins.longest-isoform.fa --out braker.augustus.apollo.2.4.2.renamed.proteins.longest-isoform --mode protein --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"
+
+
+
+
+
+
+conda activate compleasm
+
+braker.augustus.apollo.2.4.2.renamed.proteins.fa
+
+# miniprot
+miniprot --trans -u -I --outs=0.95 --gff -t 8 teladorsagia_circumcincta_tci2_wsi2.4.fa braker.augustus.apollo.2.4.2.renamed.proteins.fa > tc_2.4.2.gff
+
+# analysis with miniprot output gff file
+bsub.py 10 compleasm_tc_2.4.2 "compleasm analyze -g tc_2.4.2.gff -o compleasm_tc_2.4.2 -l nematoda -t 8 --library_path /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/BUSCO/mb_downloads"
