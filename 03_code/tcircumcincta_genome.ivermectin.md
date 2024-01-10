@@ -25,15 +25,13 @@ s
 ```
 
 
-
-
+## running grenedalf
+```bash
 OUTPUT_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/ANALYSIS
 find ~+ -type f -name '*.bam*' -exec ln -vs "{}" $OUTPUT_DIR/ ';'
 
+
 cd /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/ANALYSIS
-
-
-
 
 bsub.py --queue long 10 grenedalf_div \
 "grenedalf diversity \
@@ -55,7 +53,7 @@ bsub.py --queue long 10 grenedalf_div \
 --sam-path F3_PRE_B.bam \
 --sam-path RS3.bam \
 --sam-path SINBRED.bam"
-
+```
 
 
 RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-theta-watterson.csv
@@ -84,7 +82,8 @@ RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-theta-pi.csv
 RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-tajimas-d.csv
 
 
-
+## testing grenedalf diversity outputs
+```R
 library(tidyverse)
 library(patchwork)
 
@@ -208,11 +207,11 @@ plot_B_chr_5 <- ggplot() + geom_point(aes(data_preB_chr_5$V2, data_preB_chr_5$V5
 plot_A_chr + plot_B_chr + plot_layout(ncol=1, guides = "collect")
 
 plot_A_chr_5 + plot_B_chr_5 + plot_layout(ncol=1, guides = "collect")
+```
 
 
-
-
-
+## testing nucleotide ratios
+```R
 library(tidyverse)
 library(patchwork)
 
@@ -235,3 +234,5 @@ plot_A_notchr <- ggplot() + geom_point(aes(1:nrow(data_preA_notchr), data_preA_n
 plot_A_chr_5 <- ggplot() + geom_point(aes(data_preA_chr_5$V2, data_preA_chr_5$V5/data_postA_chr_5$V5, col=data_preA_chr_5$V1), size=0.5)
 
 plot_A_chr_X <- ggplot() + geom_point(aes(data_preA_chr_X$V2, data_preA_chr_X$V5/data_postA_chr_X$V5, col=data_preA_chr_X$V1), size=0.5)
+
+```
