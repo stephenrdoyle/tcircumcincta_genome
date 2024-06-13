@@ -138,7 +138,7 @@ gw_sig <- jm100k %>% summarise(gw=mean(F3_PRE_A.1.F3_PRE_B.1) + 5*sd(F3_PRE_A.1.
 data <- bind_rows(jm100k_F2, jm100k_F3, jm100k_postpost)
 
 plot_jm100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) + 
-    geom_point(size=0.25) + 
+    geom_point(size=0.15) + 
     labs(title="") +
     facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
     theme_bw() + 
@@ -164,7 +164,7 @@ colnames(choi100k) <- c("chrom", "start", "end", "snps", "fst", "name")
 
 
 plot_choi_100k <- ggplot(choi100k, aes((start+50000)/1e6, fst, col=chrom)) + 
-    geom_point(size=0.25) + 
+    geom_point(size=0.15) + 
     facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
     theme_bw() + 
     theme(panel.spacing.x = unit(0, "lines"), legend.position = "none", text = element_text(size = 10), strip.text.y = element_text(size = 6)) +
@@ -220,7 +220,7 @@ data_gws <- data %>%
 
 plot_strains100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) + 
     geom_hline(data = data_gws,  aes(yintercept = GWS),  linetype = "dashed",  col = "black") +
-    geom_point(size=0.25) + 
+    geom_point(size=0.15) + 
     labs(title="") +
     facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
     theme_bw() + 
@@ -233,10 +233,14 @@ plot_strains100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) +
 
 ### bring all plots together
 ```R
-plot_jm100k + plot_choi_100k + plot_strains100k + plot_layout(ncol=1, height = c(3,1,5))
+plot_genomewide_fst_plots_farm_choi_strains <-
+    plot_jm100k + 
+    plot_choi_100k + 
+    plot_strains100k + 
+    plot_layout(ncol=1, height = c(3,1,5))
 
-ggsave("genomewide_fst_plots_farm_choi_strains.png", width = 170, height = 200, units="mm")
-ggsave("genomewide_fst_plots_farm_choi_strains.pdf", width = 170, height = 200, units="mm")
+ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_farm_choi_strains.png", width = 170, height = 220, units="mm")
+ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_farm_choi_strains.pdf", width = 170, height = 220, units="mm")
 
 ```
 ![](../04_analysis/genomewide_fst_plots_farm_choi_strains.png")
