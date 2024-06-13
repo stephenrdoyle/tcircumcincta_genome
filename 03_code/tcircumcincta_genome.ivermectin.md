@@ -336,12 +336,54 @@ plot_B_chr_5 <- ggplot() + geom_point(aes(data_preB_chr_5$V2, data_preB_chr_5$V5
 plot_A_chr + plot_B_chr + plot_layout(ncol=1, guides = "collect")
 
 plot_A_chr_5 + plot_B_chr_5 + plot_layout(ncol=1, guides = "collect")
+```
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Figure - comparing Tcirc and Hcon peaks of selection on chromosome 5
+
+### heatmaps of the tcirc Fst data
+```R
 library(tidyverse)
+library(patchwork)
 
 # strains
 rawdata_strains <- read.table("tc_strains_poolseqfst.csv", header=T)
@@ -404,10 +446,15 @@ plot_tc_fst_heatmap <-
         axis.ticks.x=element_blank(),
         axis.title.y=element_blank()) 
 
+plot_tc_fst_heatmap
+
+ggsave("plot_tc_fst_heatmap.png", height=50, width=170, units="mm")
+```
+![](../04_analysis/plot_tc_fst_heatmap.png)
 
 
-
-# 1-to-1 orthologs on chromosome 5 - middle panel
+### 1-to-1 orthologs on chromosome 5 - middle panel
+```R
 ortho_data <- read.table("ORTHOFINDER_CHR5/hc_v_tc_1-to-1.chr5.coords", header=F)
 
 ortho_data <- ortho_data %>% mutate(., col = ifelse(V7 > 37200000 & V7 < 37700000, "Hc_IVM_QTL", "Other"))
@@ -428,16 +475,22 @@ plot_orthologs <-
         axis.ticks.y=element_blank(),
         axis.title.y=element_blank()) 
 
+plot_orthologs
+
+ggsave("plot_orthologs.png", height=50, width=170, units="mm")
+```
+![](../04_analysis/plot_orthologs.png)
 
 
+### Haemonchus data - bottom panel
 
+- for testing - used previosuly mapped data
+```bash
+ln -s ~sd21/lustre_link/haemonchus_contortus/XQTL/05_ANALYSIS/IVM/XQTL_IVM.merged.fst
 
-# Haemonchus data - bottom panel
+``` 
 
-# for testing - used previosuly mapped data
-# ln -s ~sd21/lustre_link/haemonchus_contortus/XQTL/05_ANALYSIS/IVM/XQTL_IVM.merged.fst
-
-
+```R
 rawdata_hc <- read.table("hc_xqtl_ivm_poolseqfst.csv", header = T)
 
 data_hc <- rawdata_hc %>% 
@@ -447,7 +500,25 @@ data_hc_chr5 <- data_hc %>% filter(grepl("chr5", chrom)) %>% arrange(chrom, star
 
 data_hc_chr5 <- data_hc_chr5 %>% mutate(., mean_fst_pc = mean_fst/max(mean_fst, na.rm=TRUE))
 
-plot_A_chr_X <- ggplot() + geom_point(aes(data_preA_chr_X$V2, data_preA_chr_X$V5/data_postA_chr_X$V5, col=data_preA_chr_X$V1), size=0.5)
+#plot_A_chr_X <- ggplot() + geom_point(aes(data_preA_chr_X$V2, data_preA_chr_X$V5/data_postA_chr_X$V5, col=data_preA_chr_X$V1), size=0.5)
+
+plot_hc_fst_heatmap <- 
+    ggplot(data, aes(start/1e6, "Haem_XQTL", fill=mean_fst_pc*100)) + 
+    geom_tile() + 
+    scale_fill_gradient(low = "white", high = "blue", na.value="white") +
+    theme_minimal() +
+    scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
+    labs(fill="% max Fst") +
+    theme(axis.title.x=element_blank(), 
+        axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank()) 
+
+plot_hc_fst_heatmap
+
+ggsave("plot_hc_fst_heatmap.png", height=20, width=170, units="mm")
+```
+![](../04_analysis/plot_hc_fst_heatmap.png)
 
 
 ```
