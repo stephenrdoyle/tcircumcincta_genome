@@ -143,7 +143,7 @@ data_means_sorted <- data_means %>%
     filter_all(all_vars(!is.infinite(.))) %>% 
     filter_all(all_vars(!is.nan(.)))
 
-data_means_sorted %>% filter(V4=="TCIR_00132080") %>% mutate(name=file)
+data_means_sorted %>% filter(V4=="TCIR_00132080") %>% mutate(name=file) %>% mutate(name = gsub(".bed.cov", "", name))
 
 }
 
