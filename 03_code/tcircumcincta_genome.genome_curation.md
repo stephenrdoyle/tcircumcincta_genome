@@ -428,3 +428,54 @@ bsub.py --queue long --threads 20 40 busco_Tc_curated.busco_recovered.reduced "b
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+#### ---- TESTING 
+
+mkdir FIX_MISSING_GENES
+
+bedtools intersect -f 0.75 -s -v -a braker_augustus.apollo.2.4.clean.gff3 -b braker.augustus.apollo.2.4.2.renamed.gff3 > FIX_MISSING_GENES/missing_genes.gff
+
+cd FIX_MISSING_GENES
+
+conda activate agat
+
+agat_sp_fix_overlaping_genes.pl -f missing_genes.gff -o missing_genes.agat.remove_overlaps.gff
+
+# before filter
+awk '{if($3=="gene") print}' missing_genes.gff | wc -l
+#> 1576
+
+# after filter
+awk '{if($3=="gene") print}' missing_genes.agat.remove_overlaps.gff | wc -l
+#> 1248
+
+
+cat missing_genes.agat.remove_overlaps.gff | sort -k1,1 -k4,4n | bgzip > missing_genes.agat.remove_overlaps.gff.gz
+
+tabix missing_genes.agat.remove_overlaps.gff.gz
+
+cp ../braker.augustus.apollo.2.4.2.renamed.gff3
+
+
+bedtools intersect -f 0.1 -s -v -a missing_genes.agat.remove_overlaps.gff -b braker.augustus.apollo.2.4.2.renamed.gff3 > missing_genes.stringent.gff
+#> 1145 
+
+conda activate agat
+
+agat_sp_fix_overlaping_genes.pl -f missing_genes.stringent.gff -o missing_genes.stringent.agat.gff
+
+
+cat missing_genes.stringent.gff | sort -k1,1 -k4,4n | bgzip > missing_genes.stringent.gff.gz 
+
+
+tabix  missing_genes.stringent.gff.gz 

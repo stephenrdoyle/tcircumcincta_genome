@@ -1184,3 +1184,136 @@ miniprot --trans -u -I --outs=0.95 --gff -t 8 teladorsagia_circumcincta_tci2_wsi
 
 # analysis with miniprot output gff file
 bsub.py 10 compleasm_tc_2.4.2 "compleasm analyze -g tc_2.4.2.gff -o compleasm_tc_2.4.2 -l nematoda -t 8 --library_path /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/BUSCO/mb_downloads"
+
+
+
+
+
+
+#### ---- TESTING 
+
+mkdir FIX_MISSING_GENES
+
+bedtools intersect -f 0.75 -s -v -a braker_augustus.apollo.2.4.clean.gff3 -b braker.augustus.apollo.2.4.2.renamed.gff3 > FIX_MISSING_GENES/missing_genes.gff
+
+cd FIX_MISSING_GENES
+
+cat missing_genes.gff | awk '{if($3=="gene") print}' | cut -f9 | sed 's/ID=//g' > missing.genes.list
+
+wc -l missing.genes.list
+#> 1489 missing.genes.list
+
+while read GENEID; do
+    grep "${GENEID}" missing_genes.gff >> missing_genes.filtered.gff;
+    done  < missing.genes.list
+
+
+conda activate agat
+
+agat_sp_fix_overlaping_genes.pl -f missing_genes.filtered.gff -o missing_genes.agat.remove_overlaps.gff
+
+# fix a problematic gene
+grep -v "nbis-gene" missing_genes.agat.remove_overlaps.gff | grep -v "TCIR_00153840" > missing_genes.agat.remove_overlaps.no-nbis.gff
+
+# after filter
+awk '{if($3=="gene") print}' missing_genes.agat.remove_overlaps.no-nbis.gff | wc -l
+#> 1120
+
+# check in apollo - bgzip/tabix
+cat missing_genes.agat.remove_overlaps.no-nbis.gff | sort -k1,1 -k4,4n | bgzip > missing_genes.agat.remove_overlaps.gff.gz
+tabix missing_genes.agat.remove_overlaps.gff.gz
+
+#> all looked ok
+
+
+# fix names so no overlaps with exisiting gene IDs
+cat missing_genes.agat.remove_overlaps.no-nbis.gff | sed 's/TCIR_0/TCIR_1/g' > missing_genes.agat.remove_overlaps.no-nbis.fix-names.gff
+
+
+cp ../braker.augustus.apollo.2.4.2.renamed.gff3 .
+
+agat_sp_merge_annotations.pl --gff braker.augustus.apollo.2.4.2.renamed.gff3 --gff missing_genes.agat.remove_overlaps.no-nbis.fix-names.gff --out tcircumcincta.v2.5.gff3.tmp
+
+
+
+
+# finding genes with internal stop codons
+
+# generate protein sequences from gff
+agat_sp_extract_sequences.pl -g tcircumcincta.v2.5.gff3.tmp  -f ../teladorsagia_circumcincta_tci2_wsi2.4.fa -p --output tcircumcincta.v2.5.proteins.fa
+
+fastaq to_fasta -l 0 tcircumcincta.v2.5.proteins.fa tcircumcincta.v2.5.proteins.l0.fa
+
+cat tcircumcincta.v2.5.proteins.l0.fa | sed 's/\*$//g' | grep -A1 "\*" | grep ">" > genes_w_stops.list
+
+cat genes_w_stops.list | sed 's/>//g' | while read MRNA GENE SEQ TYPE; do 
+    grep "ID=${MRNA};" tcircumcincta.v2.5.gff3.tmp; 
+    done
+
+more genes_w_stops.list
+>TCIR_00192180-00001 gene=TCIR_00192180 seq_id=tci2_wsi2.0_lg_2.1 type=cds
+>TCIR_10038850-00002 gene=TCIR_10038850 seq_id=tci2_wsi2.0_chr_2 type=cds
+>TCIR_00035130-00001 gene=TCIR_00035130 seq_id=tci2_wsi2.0_chr_2 type=cds
+>TCIR_00076180-00001 gene=TCIR_00076180 seq_id=tci2_wsi2.0_chr_3 type=cds
+>TCIR_00211160-00001 gene=TCIR_00211160 seq_id=tci2_wsi2.0_scaf_2039 type=cds
+
+# checked each protein sequence, and there is only one problematic one (TCIR_10038850), so will remove it. Also removed scaffs with genes with a single duplicated gene present elsewhere in the genome
+cat tcircumcincta.v2.5.gff3.tmp | 
+    grep -v "TCIR_10038850" |\
+    grep -v -w "tci2_wsi2.0_scaf_683" |\
+    grep -v -w "tci2_wsi2.0_scaf_977" |\
+    grep -v -w "tci2_wsi2.0_scaf_1891" |\
+    grep -v -w "tci2_wsi2.0_scaf_1688" |\
+    grep -v -w "tci2_wsi2.0_scaf_1612" |\
+    grep -v -w "tci2_wsi2.0_scaf_1137" > tcircumcincta.v2.5.gff3
+
+
+
+
+
+
+# generate protein sequences from gff
+conda activate agat
+
+agat_sp_extract_sequences.pl -g tcircumcincta.v2.5.gff3  -f ../teladorsagia_circumcincta_tci2_wsi2.4.fa -p --output tcircumcincta.v2.5.proteins.fa
+
+
+# check protein completeness of original, and filtered for longest isoform
+
+# -- extract longest isoforms from GFF, and then create proteins
+
+agat_sp_keep_longest_isoform.pl -gff tcircumcincta.v2.5.gff3  -out tcircumcincta.v2.5.longest-isoform.gff3
+
+agat_sp_extract_sequences.pl -g tcircumcincta.v2.5.longest-isoform.gff3  -f ../teladorsagia_circumcincta_tci2_wsi2.4.fa -p --output tcircumcincta.v2.5.longest-isoform.fa
+
+conda deactivate
+
+#- run busco
+conda activate busco_5.6.1
+busco --in tcircumcincta.v2.5.proteins.fa --out busco_tcircumcincta.v2.5.proteins --mode protein --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 -f -r
+
+#> C:96.0%[S:48.1%,D:47.9%],F:0.9%,M:3.1%,n:3131
+
+busco --in tcircumcincta.v2.5.longest-isoform.fa --out busco_tcircumcincta.v2.5.longest-isoform --mode protein --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 -f -r
+
+#> C:95.9%[S:82.5%,D:13.4%],F:0.8%,M:3.3%,n:3131
+
+
+cat tcircumcincta.v2.5.gff3 | sort -k1,1 -k4,4n | bgzip > tcircumcincta.v2.5.gff3.gz
+tabix tcircumcincta.v2.5.gff3.gz
+
+
+cat tcircumcincta.v2.5.gff3 | awk -F'[\t;]' '{if($3=="gene") print $9,$1,$4,$5,$7}' OFS="\t" | sed 's/ID=//g' | sort -k2,2V -k3,3n > tcircumcincta.v2.5.genes.list
+
+
+
+
+
+
+split -l 8000 tcircumcincta.v2.5.proteins.l0.fa
+
+for i in x*; do
+interproscan.sh --cpu 10 -i ${i} -dp -iprlookup --goterms; 
+done
+
+cat *tsv > ips_combined.tsv
