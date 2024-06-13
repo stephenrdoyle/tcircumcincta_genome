@@ -43,73 +43,31 @@ bsub.py --queue yesterday 1 mapping_poolseq "mapping-helminth --input sample_man
 where "sample_manifest.txt" is: 
 ```bash
 ID,R1,R2
-F2_POST,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm2_Post_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm2_Post_2.fq.gz
-F2_PRE,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm2_Pre_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm2_Pre_2.fq.gz
-F3_POST_A,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PostA_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PostA_2.fq.gz
-F3_POST_B,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PostB_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PostB_2.fq.gz
-F3_PRE_A,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PreA_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PreA_2.fq.gz
-F3_PRE_B,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PreB_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Farm3_PreB_2.fq.gz
-RS3,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/RS3_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/RS3_2.fq.gz
-SINBRED,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Sinbred_1_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/Sinbred_1_2.fq.gz
-MTci1_pool_adultMF_post-BZ,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#1_1.fastq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#1_2.fastq.gz
-MTci2_pool_L4,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#2_1.fastq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#2_2.fastq.gz
-MTci2_pool_adultMF,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#3_1.fastq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#3_2.fastq.gz
-MTci5_pool_L4_MOTRI,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#4_1.fastq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#4_2.fastq.gz
-MTci5_pool_adultMF_post-BZ,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#5_1.fastq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#5_2.fastq.gz
-MTci5_pool_adultM_post-IVM,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#6_1.fastq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#6_2.fastq.gz
-MTci7_pool_adultMF_MOX-R,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#7_1.fastq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA/results/fastqs/48426_1#7_2.fastq.gz
-```
-
-
-```bash
-# when mapping is completed, run multiqc
-
-multiqc .
-
+F2_POST,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm2_Post_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm2_Post_2.fq.gz
+F2_PRE,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm2_Pre_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm2_Pre_2.fq.gz
+F3_POST_A,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PostA_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PostA_2.fq.gz
+F3_POST_B,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PostB_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PostB_2.fq.gz
+F3_PRE_A,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PreA_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PreA_2.fq.gz
+F3_PRE_B,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PreB_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Farm3_PreB_2.fq.gz
+RS3,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/RS3_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/RS3_2.fq.gz
+SINBRED,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Sinbred_1_1.fq.gz,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/DATA/Sinbred_1_2.fq.gz
+s
 ```
 
 
 
-## Setup for running popgen analyses
 
-```bash
-mkdir /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS
-
-# go to mapping directory
-
-
-# nice way to find all the bams, and them make symbolic links to a target directory
-OUTPUT_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS
+OUTPUT_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/ANALYSIS
 find ~+ -type f -name '*.bam*' -exec ln -vs "{}" $OUTPUT_DIR/ ';'
 
 
-
-cd /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS
-
-ln -s ../teladorsagia_circumcincta_tci2_wsi3.0.genome.fa
-
-
-```
+cd /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/ANALYSIS
 
 
 
 
-## Run between sample Fst comparisons using grenedalf
-- decided to run each group of samples seperately, as they are quite distinct datasets both biologically and technically (sequencing platform, read lengths, amount of data, pool sizes etc), and so there are all sorts of biases that would not be controlled for by comparing them
-
-```bash
-module load grenedalf/0.3.0
-
-# choi data
-bsub.py 1 grendalf_choi_fst \
-"grenedalf fst \
---reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
---allow-file-overwriting \
---method unbiased-nei \
---file-prefix tc_choi_poolseq \
---sam-min-map-qual 30 \
---sam-min-base-qual 30 \
---filter-sample-min-count 2 \
+bsub.py --queue long 10 grenedalf_div \
+"grenedalf diversity \
 --filter-sample-min-coverage 10 \
 --filter-sample-max-coverage 100 \
 --pool-sizes 800 \
@@ -143,44 +101,38 @@ bsub.py 1 grendalf_farm_fst \
 --sam-path F3_POST_A.bam \
 --sam-path F3_POST_B.bam \
 --sam-path F3_PRE_A.bam \
---sam-path F3_PRE_B.bam"
+--sam-path F3_PRE_B.bam \
+--sam-path RS3.bam \
+--sam-path SINBRED.bam"
 
 
-# strain data
-bsub.py 1 grendalf_strains_fst \
-"grenedalf fst \
---reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
---allow-file-overwriting \
---method unbiased-nei \
---file-prefix tc_strains_poolseq \
---sam-min-map-qual 30 \
---sam-min-base-qual 30 \
---filter-sample-min-count 2 \
---filter-sample-min-coverage 10 \
---filter-sample-max-coverage 100 \
---pool-sizes 200 \
---window-type sliding \
---window-sliding-width 100000 \
---write-pi-tables \
---separator-char tab \
---sam-path MTci1_pool_adultMF_post-BZ.bam \
---sam-path MTci2_pool_adultMF.bam \
---sam-path MTci2_pool_L4.bam \
---sam-path MTci5_pool_adultMF_post-BZ.bam \
---sam-path MTci5_pool_adultM_post-IVM.bam \
---sam-path MTci5_pool_L4_MOTRI.bam \
---sam-path MTci7_pool_adultMF_MOX-R.bam"
-```
+
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-tajimas-d.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-RS3:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-RS3:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-RS3:1-tajimas-d.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-tajimas-d.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-tajimas-d.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-tajimas-d.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-tajimas-d.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_PRE:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_PRE:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_PRE:1-tajimas-d.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-theta-watterson.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-theta-pi.csv
+RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-tajimas-d.csv
 
 
-## 
-
-- farm2 - pre v post
-- farm3 - pre v post
-- farm2 post v farm3 post
-- choi RS3 v Sinbred
-
-```R
 
 library(tidyverse)
 library(patchwork)
@@ -321,311 +273,75 @@ ggplot(strains100k_t7_t5, aes((start+50000)/1e6, fst, col=chrom)) +
 
 
 
+data_preA <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-theta-watterson.csv", header=F)
+data_preA_chr <- data_preA %>% filter(grepl("chr", V1))
+data_preA_chr_5 <- data_preA %>% filter(grepl("chr_5", V1))
 
+data_postA <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-theta-watterson.csv", header=F)
+data_postA_chr <- data_postA %>% filter(grepl("chr", V1))
+data_postA_chr_5 <- data_postA %>% filter(grepl("chr_5", V1))
 
-```bash
-module load grenedalf/0.3.0
-
-# choi data
-bsub.py 1 grendalf_choi_diversity \
-"grenedalf diversity \
---reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
---allow-file-overwriting \
---measure all \
---file-prefix tc_choi_poolseq \
---sam-min-map-qual 30 \
---sam-min-base-qual 30 \
---filter-sample-min-count 2 \
---filter-sample-min-coverage 10 \
---filter-sample-max-coverage 100 \
---pool-sizes 800 \
---window-type sliding \
---window-sliding-width 100000 \
---popoolation-format \
---sam-path RS3.bam \
---sam-path SINBRED.bam"
+plot_A_chr <- ggplot() + geom_point(aes(1:nrow(data_preA_chr), data_preA_chr$V5/data_postA_chr$V5, col=data_preA_chr$V1), size=0.5) + ylim(0,15)
 
+plot_A_chr_5 <- ggplot() + geom_point(aes(data_preA_chr_5$V2, data_preA_chr_5$V5/data_postA_chr_5$V5, col=data_preA_chr_5$V1), size=0.5)
 
-# farm data
-bsub.py 1 grendalf_farm_diversity \
-"grenedalf diversity \
---reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
---allow-file-overwriting \
---measure all \
---file-prefix tc_jm_farm_poolseq \
---sam-min-map-qual 30 \
---sam-min-base-qual 30 \
---filter-sample-min-count 2 \
---filter-sample-min-coverage 10 \
---filter-sample-max-coverage 100 \
---pool-sizes 182 \
---window-type sliding \
---window-sliding-width 100000 \
---popoolation-format \
---sam-path F2_POST.bam \
---sam-path F2_PRE.bam \
---sam-path F3_POST_A.bam \
---sam-path F3_POST_B.bam \
---sam-path F3_PRE_A.bam \
---sam-path F3_PRE_B.bam"
 
 
-# strain data
-bsub.py 1 grendalf_strains_diversity \
-"grenedalf diversity \
---reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
---allow-file-overwriting \
---measure all \
---file-prefix tc_strains_poolseq \
---sam-min-map-qual 30 \
---sam-min-base-qual 30 \
---filter-sample-min-count 2 \
---filter-sample-min-coverage 10 \
---filter-sample-max-coverage 100 \
---pool-sizes 200 \
---window-type sliding \
---window-sliding-width 100000 \
---popoolation-format \
---sam-path MTci1_pool_adultMF_post-BZ.bam \
---sam-path MTci2_pool_adultMF.bam \
---sam-path MTci2_pool_L4.bam \
---sam-path MTci5_pool_adultMF_post-BZ.bam \
---sam-path MTci5_pool_adultM_post-IVM.bam \
---sam-path MTci5_pool_L4_MOTRI.bam \
---sam-path MTci7_pool_adultMF_MOX-R.bam"
-```
+data_preB <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-theta-watterson.csv", header=F)
+data_preB_chr <- data_preB %>% filter(grepl("chr", V1)) 
+data_preB_chr_5 <- data_preB %>% filter(grepl("chr_5", V1))
 
+data_postB <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-theta-watterson.csv", header=F)
+data_postB_chr <- data_postB %>% filter(grepl("chr", V1))
+data_postB_chr_5 <- data_postB %>% filter(grepl("chr_5", V1))
 
+plot_B_chr <- ggplot() + geom_point(aes(1:nrow(data_preB_chr), data_preB_chr$V5/data_postB_chr$V5, col=data_preB_chr$V1), size=0.5) + ylim(0,15)
 
+plot_B_chr_5 <- ggplot() + geom_point(aes(data_preB_chr_5$V2, data_preB_chr_5$V5/data_postB_chr_5$V5, col=data_preB_chr_5$V1), size=0.5)
 
+plot_A_chr + plot_B_chr + plot_layout(ncol=1, guides = "collect")
 
+plot_A_chr_5 + plot_B_chr_5 + plot_layout(ncol=1, guides = "collect")
 
 
 
-### TESTING - CNV analysis
-- https://github.com/andrewkern/poolDiffCNV
 
-```bash
 
-# step 1
 
-samtools view RS3.bam | python2.7 findEvertedInserts.py > everted_inserts_poolA.tsv
-samtools view SINBRED.bam | python2.7 findEvertedInserts.py > everted_inserts_poolB.tsv
+data_preA <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-tajimas-d.csv", header=F)
+data_preA_chr <- data_preA %>% filter(grepl("chr", V1))
+data_preA_chr_5 <- data_preA %>% filter(grepl("chr_5", V1))
 
-samtools view RS3.bam | python2.7 findDistantInserts.py 100000 > distant_inserts_poolA.tsv &
-samtools view SINBRED.bam | python2.7 findDistantInserts.py 100000 > distant_inserts_poolB.tsv &
+data_postA <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-tajimas-d.csv", header=F)
+data_postA_chr <- data_postA %>% filter(grepl("chr", V1))
+data_postA_chr_5 <- data_postA %>% filter(grepl("chr_5", V1))
 
-# step 2
+plot_A_chr <- ggplot() + geom_point(aes(1:nrow(data_preA_chr), data_preA_chr$V5/data_postA_chr$V5, col=data_preA_chr$V1), size=0.5) + ylim(-5,5)
 
-#--- duplications
-cat everted_inserts_poolA.tsv | python2.7  clusterEvertedInserts.py 100000 > clustered_everted_inserts_poolA.tsv &
-cat everted_inserts_poolB.tsv | python2.7  clusterEvertedInserts.py 100000 > clustered_everted_inserts_poolB.tsv &
+plot_A_chr_5 <- ggplot() + geom_point(aes(data_preA_chr_5$V2, data_preA_chr_5$V5/data_postA_chr_5$V5, col=data_preA_chr_5$V1), size=0.5) + ylim(-5,5)
 
-#--- deletions
-cat distant_inserts_poolA.tsv | python2.7 clusterDistantInserts.py 2000 5 100 > clustered_distant_inserts_poolA.tsv &
-cat distant_inserts_poolB.tsv | python2.7 clusterDistantInserts.py 2000 5 100 > clustered_distant_inserts_poolB.tsv &
 
 
+data_preB <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-tajimas-d.csv", header=F)
+data_preB_chr <- data_preB %>% filter(grepl("chr", V1)) 
+data_preB_chr_5 <- data_preB %>% filter(grepl("chr_5", V1))
 
-```
+data_postB <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-tajimas-d.csv", header=F)
+data_postB_chr <- data_postB %>% filter(grepl("chr", V1))
+data_postB_chr_5 <- data_postB %>% filter(grepl("chr_5", V1))
 
+plot_B_chr <- ggplot() + geom_point(aes(1:nrow(data_preB_chr), data_preB_chr$V5/data_postB_chr$V5, col=data_preB_chr$V1), size=0.5) + ylim(-5,5)
 
+plot_B_chr_5 <- ggplot() + geom_point(aes(data_preB_chr_5$V2, data_preB_chr_5$V5/data_postB_chr_5$V5, col=data_preB_chr_5$V1), size=0.5) + ylim(-5,5)
 
+plot_A_chr + plot_B_chr + plot_layout(ncol=1, guides = "collect")
 
+plot_A_chr_5 + plot_B_chr_5 + plot_layout(ncol=1, guides = "collect")
 
 
-## Benzimdazole analyses
-```bash
-# working dir:
-cd /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS
 
-# file containing position of variants
-> btubulin_variant_positions.txt
-# edit this to include the three isotype 1 variants 
 
-# extract allele count data for each farm
-vcftools --gzvcf TCIRC.raw.vcf.gz \
-    --positions btubulin_variant_positions.txt \
-    --extract-FORMAT-info AD \
-    --out btubulin_variant_positions
 
-# convert allele count data to variant frequency
-grep "^tci2" btubulin_variant_positions.AD.FORMAT |\
-    awk -F '[\t, ]' '{print $1, $2, $4/($3+$4), $6/($5+$6), $8/($7+$8), $10/($9+$10), $12/($11+$12), $14/($13+$14), $16/($15+$16), $18/($17+$18), $20/($19+$20), $22/($21+$22), $24/($23+$24), $26/($25+$26), $28/($27+$28), $30/($29+$30), $32/($31+$32)}' OFS="\t" > btubulin_variant_positions.AD.freq
-
-```
-
-```R
-# load libraries
-library(tidyverse)
-library(reshape2)
-
-library(rstatix)
-
-# reformat data
-btub1 <- read.table("btubulin_variant_positions.AD.freq")
-
-colnames(btub1) <- c("CHR", "POS", "Farm 1 (post)", "Farm 1 (pre)", "Farm 2 (post)", "F3_POST_B", "Farm 2 (pre)", "F3_PRE_B", "MTci1", 	"MTci2", "MTci2_pool_L4", "MTci5 (post-BZ)",	"MTci5 (post-IVM)",	"MTci5", "MTci7", "RS3", "SINBRED")
-
-btub1 <- btub1 %>% 
-            mutate(POS = str_replace(POS,  c("62291012", "62291019"),  c("E198L", "F200Y")))
-
-btub1 <- melt(btub1,  id = c("CHR",  "POS"),  variable.name = "SAMPLE_ID")
-colnames(btub1) <- c("CHR", "POS", "SAMPLE_ID", "ALLELE_FREQ")
-
-groups <- rep(c("FARM", "STRAIN", "CHOI"), c(12,14,4))
-
-groups <- melt(groups)
-colnames(groups) <- "group"
-
-data <- data.frame(btub1, groups)
-
-data <- data %>% filter(!grepl("_B", SAMPLE_ID)) %>% filter(!grepl("_pool_L4", SAMPLE_ID))
-
-# make the figure
-ggplot(data, aes(x = SAMPLE_ID, y = ALLELE_FREQ, fill = factor(POS))) +
-     geom_bar(position = "dodge",  stat = "identity") +
-     labs(title = "A",  x="Sampling location",  y="Resistant allele frequency",  fill = "Variant") +
-     theme_bw() + 
-     theme(text = element_text(size = 10), axis.text.x = element_text(angle = 45, hjust = 1)) + 
-     facet_grid(. ~ group, space="free_x", scales="free_x") +
-     ylim(0, 1)
-
-# save it
-ggsave("FigureSX_USfarm_btub1.pdf",  useDingbats=FALSE, width=170, height=100, units="mm")
-ggsave("FigureSX_USfarm_btub1.png")
-
-```
-
-
-
-
-
-
-
-## make a plot comparing Tcirc and Haem Fst values
-- use Tcirc fst data (above)
-- remap haemonchus XQTL data
-- generate 1-to-1 ortholog comparison between Tcirc and Haem
-
-
-
-
-### Mapping Haemonchus data 
-- datasets
-XQTL_F3_L3_n200_IVM_pre_01	21395_2_1
-XQTL_F3_L3_n200_IVM_post_01	21395_2_2
-XQTL_F3_L3_n200_IVM_pre_02	23241_2_1
-XQTL_F3_L3_n200_IVM_post_02	23241_2_2
-XQTL_F3_L3_n200_IVM_pre_03	23241_7_1
-XQTL_F3_L3_n200_IVM_post_03	23241_7_2
-
-
-```bash
-# Download the data from iRODs using irods_extractor
-cd ~/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/DATA
-
-irods_extractor --studyid 2679  --runid 21395 --laneid 2
-irods_extractor --studyid 2679  --runid 23241 --laneid 2
-irods_extractor --studyid 2679  --runid 23241 --laneid 7
-
-# Mapping to Haemonchus reference genome
-module load mapping-helminth/v1.0.9
-
-mapping-helminth --input hc_xqtl_sample_manifect.txt --reference HAEM_V4_final.chr.fa
-
-rm -rf work
-
-# nice way to find all the bams, and them make symbolic links to a target directory
-OUTPUT_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS
-find ~+ -type f -name 'XQTL*.bam*' -exec ln -vs "{}" $OUTPUT_DIR/ ';'
-
-cd /lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS
-
-# get reference - same version as in WBPS18
-ln -s ../../../../haemonchus_contortus/GENOME/REF/HAEM_V4_final.chr.fa
-
-# run Fst analysis
-#--- note - running in 10 kb, rather than 100kb in Tc, as Hc genome smaller and reflects what was done in the original analysis
-#--- the IVM QTL is also much smaller in Hc, so would get lost at 100 kb window
-
-module load grenedalf/0.3.0
-
-bsub.py 1 grendalf_hc_xqtl_ivm_fst \
-"grenedalf fst \
---reference-genome-fasta-file HAEM_V4_final.chr.fa \
---allow-file-overwriting \
---method unbiased-nei \
---file-prefix hc_xqtl_ivm_poolseq \
---sam-min-map-qual 30 \
---sam-min-base-qual 30 \
---filter-sample-min-count 2 \
---filter-sample-min-coverage 10 \
---filter-sample-max-coverage 200 \
---pool-sizes 400 \
---window-type sliding \
---window-sliding-width 10000 \
---write-pi-tables \
---separator-char tab \
---sam-path XQTL_F3_L3_n200_IVM_pre_01.bam \
---sam-path XQTL_F3_L3_n200_IVM_post_01.bam \
---sam-path XQTL_F3_L3_n200_IVM_pre_02.bam \
---sam-path XQTL_F3_L3_n200_IVM_post_02.bam \
---sam-path XQTL_F3_L3_n200_IVM_pre_03.bam \
---sam-path XQTL_F3_L3_n200_IVM_post_03.bam"
-```
-
-
-
-
-
-
-
-### Orthofinder analysis to ID 1-to-1 orthologs
-- using the previous orthofinder run data used to compare genomes
-
-```bash
-cd ~/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS/ORTHOFINDER_CHR5
-
-ln -s /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/GENOME_COMPARISON/ORTHOFINDER/proteins/OrthoFinder/Results_Feb22/Orthologues/Orthologues_teladorsagia_circumcincta_tci2_wsi3.0.proteins.longest-isoform/teladorsagia_circumcincta_tci2_wsi3.0.proteins.longest-isoform__v__hc.unique.proteins.tsv
-
-cat teladorsagia_circumcincta_tci2_wsi3.0.proteins.longest-isoform__v__hc.unique.proteins.tsv | awk '{if(NF==3) print $2,$3}' OFS="\t" > hc_v_tc_1-to-1-orthologs.list
-
-wget https://ftp.ebi.ac.uk/pub/databases/wormbase/parasite/releases/WBPS18/species/haemonchus_contortus/PRJEB506/haemonchus_contortus.PRJEB506.WBPS18.annotations.gff3.gz
-gunzip haemonchus_contortus.PRJEB506.WBPS18.annotations.gff3
-
-mv haemonchus_contortus.PRJEB506.WBPS18.annotations.gff3 hc.gff3
-
-ln -s /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/V3/teladorsagia_circumcincta_tci2_wsi3.0.annotation.gff3 tc.gff3
-
-# some strange hidden characters need to be removed
-sed -i $'s/[^[:print:]\t]//g' hc_v_tc_1-to-1-orthologs.list
-
-# get gene coordinates
-awk -F '[\t;]' '$3=="mRNA" {print $1, $4, $5, $7, $9}' OFS="\t" tc.gff3 | sed 's/ID=//g' > tc.gff.coords
-awk -F '[\t;]' '$3=="mRNA" {print $1, $4, $5, $7, $9}' OFS="\t" hc.gff3 | sed 's/ID=transcript://g' > hc.gff.coords
-
-# extract positional data for both Hc and Ce
-cat hc_v_tc_1-to-1-orthologs.list | while read -r tcirc haem ; do 
-    COORDS1=$(grep "${tcirc}" tc.gff.coords) ; 
-    COORDS2=$(grep "${haem}" hc.gff.coords) ; 
-    echo -e "${COORDS1}\t${COORDS2}" ; 
-    done > hc_v_tc_1-to-1.coords
-
-
-cat hc_v_tc_1-to-1.coords | grep "tci2_wsi3.0_chr_5" | grep "hcontortus_chr5_Celeg_TT_arrow_pilon" > hc_v_tc_1-to-1.chr5.coords
-
-wc -l hc_v_tc_1-to-1.chr5.coords
-#> 1253 hc_v_tc_1-to-1.chr5.coords
-```
-
-
-
-
-### Making the figure
-working dir: ~/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS
-
-```R
 library(tidyverse)
 
 # strains
@@ -732,21 +448,4 @@ data_hc_chr5 <- data_hc %>% filter(grepl("chr5", chrom)) %>% arrange(chrom, star
 
 data_hc_chr5 <- data_hc_chr5 %>% mutate(., mean_fst_pc = mean_fst/max(mean_fst, na.rm=TRUE))
 
-plot_hc_fst_heatmap <- 
-    ggplot(data_hc_chr5, aes(start/1e6, 'Haem_XQTL', fill=mean_fst_pc*100)) +    
-    geom_tile() + 
-    scale_fill_gradient(low = "white", high = "blue", na.value="white") + 
-    labs(x="Genome position (Mb)", fill="% max Fst") +
-    theme_minimal() +
-    scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
-    theme(axis.title.y=element_blank())
-
-
-
-
-# bring it all together
-plot_tc_fst_heatmap + 
-    plot_orthologs + 
-    plot_hc_fst_heatmap + 
-    plot_layout(ncol=1, heights = c(3,3,1), guides = "collect")  
-```
+plot_A_chr_X <- ggplot() + geom_point(aes(data_preA_chr_X$V2, data_preA_chr_X$V5/data_postA_chr_X$V5, col=data_preA_chr_X$V1), size=0.5)
