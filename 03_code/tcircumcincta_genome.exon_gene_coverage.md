@@ -170,8 +170,8 @@ ggplot(data, aes(x = reorder(name, ratio), y = ratio, fill=ratio)) +
     scale_fill_viridis(option="plasma", limits=c(0,15)) +
     theme_bw() + theme(legend.position="none")
 
-ggsave("pgp-9_copy_number.png", height=40, width=125, units="mm")
-ggsave("pgp-9_copy_number.pdf", height=40, width=125, units="mm")
+ggsave("pgp-9_copy_number.png", height=45, width=140, units="mm")
+ggsave("pgp-9_copy_number.pdf", height=45, width=140, units="mm")
 
 ```
 ![](../04_analysis/pgp-9_copy_number.png)

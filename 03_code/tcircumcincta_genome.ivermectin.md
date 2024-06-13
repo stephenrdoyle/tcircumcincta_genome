@@ -636,8 +636,8 @@ ggsave("plot_tc_hc_chr5_heatmaps_orthologs.png", height=100, width=170, units="m
 
 
 
-
-
+### bring all of the plots together
+```R
     plot_FST + 
     plot_LD_5 +
     plot_cov + 
@@ -646,3 +646,7 @@ ggsave("plot_tc_hc_chr5_heatmaps_orthologs.png", height=100, width=170, units="m
     plot_hc_fst_heatmap + 
     plot_layout(ncol=1, heights=c(3,3,3,3,3,1))
 
+ggsave("figure_ivm_analyses.png", height=150, width=170, units="mm")
+ggsave("figure_ivm_analyses.pdf", height=150, width=170, units="mm")
+```
+![](../04_analysis/figure_ivm_analyses.png)
