@@ -341,31 +341,131 @@ plot_A_chr_5 + plot_B_chr_5 + plot_layout(ncol=1, guides = "collect")
 
 
 
+## Figure - analysis of Chr5 peak, LD and coverage
+- 
+```bash
+# get data from Jenni
+ln -s /nfs/users/nfs_j/jm62/scratch/Tci2_wsi2.4_pwc/ddrad/aligned/results/plink_chrs/For_paper/LD_CALC_1MB_CHR/MAF0.1_LD_CALC_1MB_CHR.txt
+
+ln -s /nfs/users/nfs_j/jm62/scratch/Tci2_wsi2.4_pwc/Align_reads/Maphelm_pipeline/results/depth/100kb_win_depth_ratio/chr5_mh_filt_cigar_tcwsi2.4.depth_100kb_q30Q30_ratio
+
+#ln -s /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/DRUG_POPGEN/POOLSEQ/ANALYSIS/tc_jm_farm_poolseqfst.csv
+
+
+
+grep -e 'CHR_5' MAF0.1_LD_CALC_1MB_CHR.txt > MAF0.1_LD_CALC_1MB_CHR.txt_CHR_5
+
+head -n 1 tc_jm_farm_poolseqfst.csv > head
+
+grep -e 'chr_5' tc_jm_farm_poolseqfst.csv > tc_jm_farm_poolseqfst.csv_CHR_5_tmp
+
+cat head tc_jm_farm_poolseqfst.csv_CHR_5_tmp > tc_jm_farm_poolseqfst.csv_CHR_5
+```
+
+```R
+library(ggplot2)
+library(patchwork)
+library(reshape2)
+library(dplyr)
+
+# Load the data
+dfcov   <-  read.table("chr5_mh_filt_cigar_tcwsi2.4.depth_100kb_q30Q30_ratio", header = T)
+dfmaf   <-  read.table("MAF0.1_LD_CALC_1MB_CHR.txt_CHR_5", header=F)
+dffst   <-  read.table("tc_jm_farm_poolseqfst.csv", header=T, na.strings ="nan")
+dffst_chr5  <-  read.table("tc_jm_farm_poolseqfst.csv_CHR_5", header=T)
+
+# Plot the Fst for Farm 1 post : Farm 2A post:
+# Note that for the code this actually refers to F2 and F3, as a different farm, for a separate study, was F1. 
+# First, select just this comparison from the df
+dffst_chr5_F1prepost <- dffst_chr5 %>% 
+    select(chrom, start, end, snps, F2_POST.1.F2_PRE.1)
+#dffst_chr5_F2Aprepost <- dffst_chr5 %>% select(chrom, start, end, snps, F3_POST_A.1.F3_PRE_A.1)
+#dffst_chr5_postpost <- dffst_chr5 %>% select(chrom, start, end, snps, F2_POST.1.F3_POST_A.1)
+
+dffst_chr5_F1prepost$name <- "1.F1_POST_F1_PRE"
+#dffst_chr5_F2Aprepost$name <- "2.F2_POST_A_F2_PRE_A"
+#dffst_chr5_postpost$name <- "2.F1_POST_F2_POST_A"
+
+colnames(dffst_chr5_F1prepost) <- c("chrom", "start", "end", "snps", "fst", "name")
+#colnames(dffst_chr5_F2Aprepost) <- c("chrom", "start", "end", "snps", "fst", "name")
+#colnames(dffst_chr5_postpost) <- c("chrom", "start", "end", "snps", "fst", "name")
+
+#data <- bind_rows(dffst_chr5_F1prepost, dffst_chr5_postpost)
+#data <- bind_rows(dffst_chr5_F1prepost, dffst_chr5_F2Aprepost)
+
+
+
+# Calculate the Mean+5stdev for the Farm 2 Pre:Pre technical replicate comparison, have to first get rid of the NAs or it can't cope.
+for_math    <-  subset(dffst, dffst$F3_PRE_A.1.F3_PRE_B.1 != "NA")
+gw_sig <- for_math %>% 
+    summarise(gw=mean(F3_PRE_A.1.F3_PRE_B.1) + 3*sd(F3_PRE_A.1.F3_PRE_B.1))
+
+plot_FST <- 
+    ggplot(dffst_chr5_F1prepost, aes((start+50000)/1e6, fst)) + 
+        geom_point(colour="#f57600", size=0.5) + 
+        scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
+        theme_bw() + 
+        theme(axis.title.x=element_blank(),
+            axis.text.x=element_blank(),
+            legend.position = "none") +
+            labs(y="Fst") +
+            geom_hline(yintercept=gw_sig$gw, linetype='dashed')
+            
+            
+            #scale_x_continuous(breaks = seq(0, 95, 10), minor_breaks = seq(5, 85, 5))
 
 
 
 
+# Plot the linkage decay for Farm 1 pre & post:
+plot_LD_5    <-  
+    ggplot(data=dfmaf, aes(x=((V5-500000)/1000000), y=(V7/1000)))+
+        geom_line(aes(colour=V1), linewidth=0.8)+
+        scale_colour_manual(values =c("#dd5e00","#faaf90"))+
+        labs(y="LD decay distance \n to r^2=0.05 (Kb)", colour="Farm 1")+
+        scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
+        theme_bw()+
+        theme(axis.title.x=element_blank(),
+            axis.text.x=element_blank())
+
+
+#scale_x_continuous(breaks = seq(0, 95, 10), minor_breaks = seq(5, 85, 5))+
+
+# title="LD decay in 1 Mb windows along Chromosome 5 :: maf >= 0.1"
+# Legend: Pale orange = PRE, Darker orange = POST
 
 
 
 
+# Plot the coverage for F1 Post:Pre
+# First, select just these comparisons from the df
+dfcov_2<-dfcov[,1:3]
+summary(dfcov_2)
+melt_dfcov<-melt(dfcov_2, id.vars = c("chrom","mid"))
+summary(melt_dfcov)
+
+# Plot F1: orange = F1
+plot_cov <- ggplot(data=melt_dfcov, aes(x=mid/1000000, y=value))+
+            geom_line(data=subset(melt_dfcov, melt_dfcov$variable == "Farm1.Post.Pre"), colour="#f57600", linewidth=0.5) +
+            labs(y="Coverage ratio", x="Genomic position (Mb)")+
+            scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
+            theme_bw()
 
 
+#             scale_x_continuous(breaks = seq(0, 91, 10),minor_breaks = seq(5, 85, 5))+
+# caption="Depth ratio: Ratio of: (Post-Tx 100 kb win average coverage/Post-Tx Median 100 kb win coverage):(Pre-Tx 100 kb win average coverage/Pre-Tx Median 100 kb win coverage)\ni.e. (Farm1 Post/Farm1 Post Median)/(Farm1 Pre/Farm1 Pre Median)"
 
 
+plot_fst_ld_cov <- 
+    plot_FST / plot_LD_5 / plot_cov + 
+    plot_layout (axis_titles = "collect") 
 
+plot_fst_ld_cov
 
+ggsave("plot_fst_ld_cov.png", width = 170, height = 100, units="mm")
 
-
-
-
-
-
-
-
-
-
-
+```
+![](../04_analysis/plot_fst_ld_cov.png")
 
 
 
@@ -430,15 +530,15 @@ data_farms_chr5 <- data_farms_chr5 %>% select(chrom, start, end, snps, mean_fst,
 data_farms_chr5 <- data_farms_chr5 %>% mutate(., mean_fst_pc = mean_fst/max(mean_fst))
 
 
-data <- bind_rows(data_strains_chr5, data_choi_chr5, data_farms_chr5)
+data_farms_chr5 <- bind_rows(data_strains_chr5, data_choi_chr5, data_farms_chr5)
 
 
 # plot - top panel
 plot_tc_fst_heatmap <- 
-    ggplot(data, aes(start/1e6, group, fill=mean_fst_pc*100)) + 
+    ggplot(data_farms_chr5, aes(start/1e6, group, fill=mean_fst_pc*100)) + 
     geom_tile() + 
     scale_fill_gradient(low = "white", high = "blue", na.value="white") +
-    theme_minimal() +
+    theme_bw() +
     scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
     labs(fill="% max Fst") +
     theme(axis.title.x=element_blank(), 
@@ -465,7 +565,7 @@ plot_orthologs <-
     geom_segment(aes(x = V2/1e6, y = 1, xend = V7/1e6, yend = 0, col=col), alpha=0.2) +
     geom_segment(data = subset(ortho_data, col=="Hc_IVM_QTL"), aes(x = V2/1e6, y = 1, xend = V7/1e6, yend = 0, col=col)) +
     scale_color_manual(values = c("Other"="grey", "Hc_IVM_QTL"="red")) + 
-    theme_minimal() +
+    theme_bw() +
     labs(col="1-to-1 othologs") +
     scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
     theme(axis.title.x=element_blank(),
@@ -506,13 +606,10 @@ plot_hc_fst_heatmap <-
     ggplot(data, aes(start/1e6, "Haem_XQTL", fill=mean_fst_pc*100)) + 
     geom_tile() + 
     scale_fill_gradient(low = "white", high = "blue", na.value="white") +
-    theme_minimal() +
+    theme_bw() + theme(legend.position = "none")+
     scale_x_continuous(n.breaks = 10, limits=c(0,91)) +
-    labs(fill="% max Fst") +
-    theme(axis.title.x=element_blank(), 
-        axis.text.x=element_blank(), 
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank()) 
+    labs(fill="% max Fst", x="Genomic position (Mb)", y="")
+
 
 plot_hc_fst_heatmap
 
@@ -529,10 +626,23 @@ plot_tc_hc_chr5_heatmaps_orthologs <-
     plot_tc_fst_heatmap + 
     plot_orthologs + 
     plot_hc_fst_heatmap + 
-    plot_layout(ncol=1, guides = "collect", )
+    plot_layout(ncol=1, guides = "collect", heights=c(3,3,1))
 
 plot_tc_hc_chr5_heatmaps_orthologs
 
-ggsave("plot_tc_hc_chr5_heatmaps_orthologs.png", height=50, width=170, units="mm")
+ggsave("plot_tc_hc_chr5_heatmaps_orthologs.png", height=100, width=170, units="mm")
 ```
 ![](../04_analysis/plot_tc_hc_chr5_heatmaps_orthologs.png)
+
+
+
+
+
+    plot_FST + 
+    plot_LD_5 +
+    plot_cov + 
+    plot_tc_fst_heatmap + 
+    plot_orthologs + 
+    plot_hc_fst_heatmap + 
+    plot_layout(ncol=1, heights=c(3,3,3,3,3,1))
+
