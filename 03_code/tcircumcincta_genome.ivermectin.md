@@ -521,4 +521,18 @@ ggsave("plot_hc_fst_heatmap.png", height=20, width=170, units="mm")
 ![](../04_analysis/plot_hc_fst_heatmap.png)
 
 
+### bring the figure together
+```R
+library(patchwork)
+
+plot_tc_hc_chr5_heatmaps_orthologs <- 
+    plot_tc_fst_heatmap + 
+    plot_orthologs + 
+    plot_hc_fst_heatmap + 
+    plot_layout(ncol=1, guides = "collect", )
+
+plot_tc_hc_chr5_heatmaps_orthologs
+
+ggsave("plot_tc_hc_chr5_heatmaps_orthologs.png", height=50, width=170, units="mm")
 ```
+![](../04_analysis/plot_tc_hc_chr5_heatmaps_orthologs.png)
