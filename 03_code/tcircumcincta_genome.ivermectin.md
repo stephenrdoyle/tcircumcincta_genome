@@ -56,7 +56,7 @@ s
 
 
 
-
+```bash
 OUTPUT_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/POOLSEQ/ANALYSIS
 find ~+ -type f -name '*.bam*' -exec ln -vs "{}" $OUTPUT_DIR/ ';'
 
@@ -104,7 +104,7 @@ bsub.py 1 grendalf_farm_fst \
 --sam-path F3_PRE_B.bam \
 --sam-path RS3.bam \
 --sam-path SINBRED.bam"
-
+```
 
 
 RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-theta-watterson.csv
@@ -133,7 +133,7 @@ RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-theta-pi.csv
 RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-tajimas-d.csv
 
 
-
+```R
 library(tidyverse)
 library(patchwork)
 
@@ -248,7 +248,10 @@ plot_strains100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) +
 
 
 plot_jm100k + plot_choi_100k + plot_strains100k + plot_layout(ncol=1, height = c(3,1,5))
-```
+
+
+
+
 
 strains100k_t7_t5 <- strains100k %>% select(chrom, start, end, snps, MTci5_pool_adultM_post.IVM.1.MTci7_pool_adultMF_MOX.R.1)
 strains100k_t7_t5$name <- "Tci7_v_Tci5"
@@ -264,10 +267,6 @@ ggplot(strains100k_t7_t5, aes((start+50000)/1e6, fst, col=chrom)) +
     theme(panel.spacing.x = unit(0, "lines"), legend.position = "none", text = element_text(size = 10), strip.text.y = element_text(size = 6)) +
     labs(title="C", x="Genomic position (Mb)", y="Fst") +
     scale_colour_manual(values=colours)
-
-
-
-
 
 
 
@@ -449,3 +448,6 @@ data_hc_chr5 <- data_hc %>% filter(grepl("chr5", chrom)) %>% arrange(chrom, star
 data_hc_chr5 <- data_hc_chr5 %>% mutate(., mean_fst_pc = mean_fst/max(mean_fst, na.rm=TRUE))
 
 plot_A_chr_X <- ggplot() + geom_point(aes(data_preA_chr_X$V2, data_preA_chr_X$V5/data_postA_chr_X$V5, col=data_preA_chr_X$V1), size=0.5)
+
+
+```
