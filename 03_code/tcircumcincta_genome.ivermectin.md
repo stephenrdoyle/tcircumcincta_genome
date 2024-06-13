@@ -107,32 +107,10 @@ bsub.py 1 grendalf_farm_fst \
 ```
 
 
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-SINBRED:1-tajimas-d.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-RS3:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-RS3:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-RS3:1-tajimas-d.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_B:1-tajimas-d.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-tajimas-d.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_B:1-tajimas-d.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_POST_A:1-tajimas-d.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_PRE:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_PRE:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_PRE:1-tajimas-d.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-theta-watterson.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-theta-pi.csv
-RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F2_POST:1-tajimas-d.csv
 
+## Genome-wide plots
 
+### Farm 1 and 2 isolates
 ```R
 library(tidyverse)
 library(patchwork)
@@ -160,17 +138,23 @@ gw_sig <- jm100k %>% summarise(gw=mean(F3_PRE_A.1.F3_PRE_B.1) + 5*sd(F3_PRE_A.1.
 data <- bind_rows(jm100k_F2, jm100k_F3, jm100k_postpost)
 
 plot_jm100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) + 
-    geom_point(size=0.1) + 
+    geom_point(size=0.25) + 
     labs(title="") +
     facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
     theme_bw() + 
     theme(panel.spacing.x = unit(0, "lines"), legend.position = "none", text = element_text(size = 10), strip.text.y = element_text(size = 6)) +
     labs(title="A", x="Genomic position (Mb)", y="Fst") +
     scale_colour_manual(values=colours) +
-    geom_hline(yintercept=gw_sig$gw, linetype='dashed')
+    geom_hline(yintercept=gw_sig$gw, linetype='dashed') +
+    scale_x_continuous(breaks=seq(0,100,20))
 
 
 plot_jm100k
+```
+
+### Choi strains
+```R
+
 
 choi100k <- read.table("tc_choi_poolseqfst.csv", header=T)
 choi100k <- choi100k %>% filter(grepl("chr_[12345X]", chrom)) %>% arrange(chrom, start)
@@ -180,20 +164,20 @@ colnames(choi100k) <- c("chrom", "start", "end", "snps", "fst", "name")
 
 
 plot_choi_100k <- ggplot(choi100k, aes((start+50000)/1e6, fst, col=chrom)) + 
-    geom_point(size=0.1) + 
+    geom_point(size=0.25) + 
     facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
     theme_bw() + 
     theme(panel.spacing.x = unit(0, "lines"), legend.position = "none", text = element_text(size = 10), strip.text.y = element_text(size = 6)) +
     labs(title="B", x="Genomic position (Mb)", y="Fst")+
-    scale_colour_manual(values=colours)
+    scale_colour_manual(values=colours)+
+    scale_x_continuous(breaks=seq(0,100,20))
+
+```
 
 
 
-plot_jm100k + plot_choi_100k + plot_layout(ncol=1, height = c(3,1))
-
-
-
-
+### MTci strains
+```R
 colours <- c("#d0e11c", "#73d056", "#2db27d", "#21918c", "#2e6e8e", "#46327e")
 
 
@@ -236,23 +220,33 @@ data_gws <- data %>%
 
 plot_strains100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) + 
     geom_hline(data = data_gws,  aes(yintercept = GWS),  linetype = "dashed",  col = "black") +
-    geom_point(size=0.1) + 
+    geom_point(size=0.25) + 
     labs(title="") +
     facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
     theme_bw() + 
     theme(panel.spacing.x = unit(0, "lines"), legend.position = "none", text = element_text(size = 10), strip.text.y = element_text(size = 6)) +
     labs(title="C", x="Genomic position (Mb)", y="Fst") +
-    scale_colour_manual(values=colours)
+    scale_colour_manual(values=colours)+
+    scale_x_continuous(breaks=seq(0,100,20))
 
+```
 
-
-
+### bring all plots together
+```R
 plot_jm100k + plot_choi_100k + plot_strains100k + plot_layout(ncol=1, height = c(3,1,5))
 
+ggsave("genomewide_fst_plots_farm_choi_strains.png", width = 170, height = 200, units="mm")
+ggsave("genomewide_fst_plots_farm_choi_strains.pdf", width = 170, height = 200, units="mm")
+
+```
+![](../04_analysis/genomewide_fst_plots_farm_choi_strains.png")
 
 
+### comparison of MTci5 and MTci7
+- some questions remain about whether these two strains are related to each other somehow
+- may have come from the same farm, but sampled at two distinct time points, and perhaps even from two distinct flocks
 
-
+```R
 strains100k_t7_t5 <- strains100k %>% select(chrom, start, end, snps, MTci5_pool_adultM_post.IVM.1.MTci7_pool_adultMF_MOX.R.1)
 strains100k_t7_t5$name <- "Tci7_v_Tci5"
 colnames(strains100k_t7_t5) <- c("chrom", "start", "end", "snps", "fst", "name")
@@ -268,10 +262,10 @@ ggplot(strains100k_t7_t5, aes((start+50000)/1e6, fst, col=chrom)) +
     labs(title="C", x="Genomic position (Mb)", y="Fst") +
     scale_colour_manual(values=colours)
 
+```
 
 
-
-
+```R
 data_preA <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-theta-watterson.csv", header=F)
 data_preA_chr <- data_preA %>% filter(grepl("chr", V1))
 data_preA_chr_5 <- data_preA %>% filter(grepl("chr_5", V1))
