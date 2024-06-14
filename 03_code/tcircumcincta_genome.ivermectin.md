@@ -270,6 +270,9 @@ ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_fa
 - may have come from the same farm, but sampled at two distinct time points, and perhaps even from two distinct flocks
 
 ```R
+library(tidyverse)
+
+colours <- c("#d0e11c", "#73d056", "#2db27d", "#21918c", "#2e6e8e", "#46327e")
 
 strains100k <- read.table("tc_strains_poolseqfst.csv", header=T)
 strains100k <- strains100k %>% filter(grepl("chr_[12345X]", chrom)) %>% arrange(chrom, start)
@@ -300,7 +303,7 @@ ggsave("genomewide_fst_plots_strains100k_t7_t5.png", width = 170, height = 50, u
 
 
 
-```R
+<!-- ```R
 data_preA <- read.table("RS3_v_Sinbred.bwa.freq0.1.cov.10.divdiversity-F3_PRE_A:1-theta-watterson.csv", header=F)
 data_preA_chr <- data_preA %>% filter(grepl("chr", V1))
 data_preA_chr_5 <- data_preA %>% filter(grepl("chr_5", V1))
@@ -330,8 +333,6 @@ plot_B_chr_5 <- ggplot() + geom_point(aes(data_preB_chr_5$V2, data_preB_chr_5$V5
 plot_A_chr + plot_B_chr + plot_layout(ncol=1, guides = "collect")
 
 plot_A_chr_5 + plot_B_chr_5 + plot_layout(ncol=1, guides = "collect")
-
-
 
 
 
@@ -366,7 +367,7 @@ plot_A_chr + plot_B_chr + plot_layout(ncol=1, guides = "collect")
 
 plot_A_chr_5 + plot_B_chr_5 + plot_layout(ncol=1, guides = "collect")
 ```
-
+ -->
 
 
 

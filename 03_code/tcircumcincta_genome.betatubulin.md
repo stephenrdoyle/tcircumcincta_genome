@@ -79,13 +79,65 @@ sed 's/AACAGGTCGATTTTGTCTCCATTATGTTGAAATATGGTTCATACAGTTGCGGTCAAAAAGTTTGGAAACTTTT
 
 
 
+## Calculated frequence of variants associated with resistance to BZ in beta-tubulins
 
+```bash
 cat btubulin_variant_positions.txt
-tci2_wsi3.0_chr_1	62290796
 tci2_wsi3.0_chr_1	62291012
 tci2_wsi3.0_chr_1	62291019
 tci2_wsi3.0_chr_2	59150243
-tci2_wsi3.0_chr_2	59150244
 
 
 vcftools --gzvcf TCIRC.raw.vcf.gz --extract-FORMAT-info AD --out btubulin_variant_positions --positions btubulin_variant_positions.txt
+
+# convert allele count data to variant frequency
+grep "^tci2_wsi3.0" btubulin_variant_positions.AD.FORMAT | awk -F '[\t, ]' '{print $1, $2, $4/($3+$4), $6/($5+$6), $8/($7+$8), $10/($9+$10), $12/($11+$12), $14/($13+$14), $16/($15+$16), $18/($17+$18), $20/($19+$20), $22/($21+$22), $24/($23+$24), $26/($25+$26), $28/($27+$28), $30/($29+$30), $32/($31+$32)}' OFS="\t" > btubulin_variant_positions.AD_freq
+
+# note: removed the second position, ie 59150244, from the data to simplify the plotting
+# 59150244 and 59150243 variants are inherited together
+```
+
+```R
+# load libraries
+library(reshape2)
+library(ggplot2)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(rstatix)
+
+# reformat data
+btub_data <- read.table("btubulin_variant_positions.AD_freq")
+
+colnames(btub_data) <- c("CHROM", "POS",	"Farm 1 (post)",	"Farm 1 (pre)",	"Farm 2 (post)",	"Farm 2 (post) B",	"Farm 2 (pre)",	"Farm 2 (pre) B",	"MTci1",	"MTci2",	"MTci2_pool_L4",	"MTci5 (post-BZ)",	"MTci5 (post-IVM)",	"MTci5",	"MTci7",	"RS3",	"Sinbred")
+
+btub_data <- btub_data %>% select("CHROM", "POS",	"Farm 1 (post)",	"Farm 1 (pre)",	"Farm 2 (post)",	"Farm 2 (pre)",	"MTci1",	"MTci2",	"MTci5 (post-BZ)",	"MTci5 (post-IVM)",	"MTci5",	"MTci7",	"RS3",	"Sinbred")
+
+btub_data$gene <- c("isotype 1", "isotype 1",  "isotype 2")
+
+btub_data_melt <- melt(btub_data,  id = c("CHROM",  "POS", "gene"),  variable.name = "SAMPLE_ID")
+
+btub_data_melt$group <- c(rep("Farm", 12), rep("Strain", 18), rep("Choi", 6) )
+
+colnames(btub_data_melt) <- c("CHR", "POS", "GENE", "SAMPLE_ID", "ALLELE_FREQ", "GROUP")
+
+btub_data_melt <-
+     btub_data_melt %>%
+     mutate(POS = str_replace(POS,  "62291012",  "E198L")) %>% 
+     mutate(POS = str_replace(POS,  "62291019", "F200Y")) %>% 
+     mutate(POS = str_replace(POS,   "59150243", "E198A"))
+
+# make the figure
+ggplot(btub_data_melt, aes(x = SAMPLE_ID, y = ALLELE_FREQ, fill = factor(POS))) +
+     geom_bar(position = "dodge",  stat = "identity") +
+     labs(x="Sampling location",  y="Resistant allele frequency",  fill = "Variant") +
+     theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust=1)) +
+     ylim(0,1) +
+     facet_grid(GENE ~ GROUP, space="free_x", scales="free_x")
+
+# save it
+ggsave("figure_betatubulin_variants.pdf", width=170, height=100, units="mm")
+ggsave("figure_betatubulin_variants.png", width=170, height=100, units="mm")
+
+```
+![](../04_analysis/figure_betatubulin_variants.png)
