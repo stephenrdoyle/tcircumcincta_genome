@@ -262,18 +262,25 @@ ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_fa
 ![](../04_analysis/genomewide_fst_plots_farm_choi_strains.png)
 
 
-### comparison of MTci5 and MTci7
+
+
+
+### Comparison of MTci5 and MTci7
 - some questions remain about whether these two strains are related to each other somehow
 - may have come from the same farm, but sampled at two distinct time points, and perhaps even from two distinct flocks
 
 ```R
+
+strains100k <- read.table("tc_strains_poolseqfst.csv", header=T)
+strains100k <- strains100k %>% filter(grepl("chr_[12345X]", chrom)) %>% arrange(chrom, start)
+
 strains100k_t7_t5 <- strains100k %>% select(chrom, start, end, snps, MTci5_pool_adultM_post.IVM.1.MTci7_pool_adultMF_MOX.R.1)
 strains100k_t7_t5$name <- "Tci7_v_Tci5"
 colnames(strains100k_t7_t5) <- c("chrom", "start", "end", "snps", "fst", "name")
 
 
 
-ggplot(strains100k_t7_t5, aes((start+50000)/1e6, fst, col=chrom)) + 
+plot_strains100k_t7_t5 <- ggplot(strains100k_t7_t5, aes((start+50000)/1e6, fst, col=chrom)) + 
     geom_point(size=0.1) + 
     labs(title="") +
     facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
@@ -282,7 +289,15 @@ ggplot(strains100k_t7_t5, aes((start+50000)/1e6, fst, col=chrom)) +
     labs(title="C", x="Genomic position (Mb)", y="Fst") +
     scale_colour_manual(values=colours)
 
+plot_strains100k_t7_t5 
+
+ggsave("genomewide_fst_plots_strains100k_t7_t5.png", width = 170, height = 50, units="mm")
 ```
+![](../04_analysis/genomewide_fst_plots_strains100k_t7_t5.png)
+
+
+
+
 
 
 ```R
