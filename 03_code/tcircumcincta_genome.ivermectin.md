@@ -259,7 +259,7 @@ ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_fa
 ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_farm_choi_strains.pdf", width = 170, height = 220, units="mm")
 
 ```
-![]("../04_analysis/genomewide_fst_plots_farm_choi_strains.png")
+![](../04_analysis/genomewide_fst_plots_farm_choi_strains.png)
 
 
 ### comparison of MTci5 and MTci7
