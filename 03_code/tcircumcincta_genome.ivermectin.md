@@ -154,7 +154,7 @@ plot_jm100k
 ggsave("genomewide_fst_plots_farm_plot_jm100k.png", width = 170, height = 100, units="mm")
 
 ```
-![](../04_analysis/genomewide_fst_plots_farm_plot_jm100k.png")
+![](../04_analysis/genomewide_fst_plots_farm_plot_jm100k.png)
 
 
 
@@ -182,7 +182,7 @@ plot_choi_100k
 
 ggsave("genomewide_fst_plots_choi_plot_jm100k.png", width = 170, height = 100, units="mm")
 ```
-![](../04_analysis/genomewide_fst_plots_choi_plot_jm100k.png")
+![](../04_analysis/genomewide_fst_plots_choi_plot_jm100k.png)
 
 
 ### MTci strains
@@ -242,7 +242,7 @@ plot_strains100k
 
 ggsave("genomewide_fst_plots_strains_plot_jm100k.png", width = 170, height = 150, units="mm")
 ```
-![](../04_analysis/genomewide_fst_plots_strains_plot_jm100k.png")
+![](../04_analysis/genomewide_fst_plots_strains_plot_jm100k.png)
 
 
 
@@ -259,7 +259,7 @@ ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_fa
 ggsave(plot=plot_genomewide_fst_plots_farm_choi_strains,"genomewide_fst_plots_farm_choi_strains.pdf", width = 170, height = 220, units="mm")
 
 ```
-![](../04_analysis/genomewide_fst_plots_farm_choi_strains.png")
+![]("../04_analysis/genomewide_fst_plots_farm_choi_strains.png")
 
 
 ### comparison of MTci5 and MTci7
@@ -479,7 +479,7 @@ plot_fst_ld_cov
 ggsave("plot_fst_ld_cov.png", width = 170, height = 100, units="mm")
 
 ```
-![](../04_analysis/plot_fst_ld_cov.png")
+![](../04_analysis/plot_fst_ld_cov.png)
 
 
 
