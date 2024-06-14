@@ -150,7 +150,13 @@ plot_jm100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) +
 
 
 plot_jm100k
+
+ggsave("genomewide_fst_plots_farm_plot_jm100k.png", width = 170, height = 100, units="mm")
+
 ```
+![](../04_analysis/genomewide_fst_plots_farm_plot_jm100k.png")
+
+
 
 ### Choi strains
 ```R
@@ -172,8 +178,11 @@ plot_choi_100k <- ggplot(choi100k, aes((start+50000)/1e6, fst, col=chrom)) +
     scale_colour_manual(values=colours)+
     scale_x_continuous(breaks=seq(0,100,20))
 
-```
+plot_choi_100k
 
+ggsave("genomewide_fst_plots_choi_plot_jm100k.png", width = 170, height = 100, units="mm")
+```
+![](../04_analysis/genomewide_fst_plots_choi_plot_jm100k.png")
 
 
 ### MTci strains
@@ -229,7 +238,14 @@ plot_strains100k <- ggplot(data, aes((start+50000)/1e6, fst, col=chrom)) +
     scale_colour_manual(values=colours)+
     scale_x_continuous(breaks=seq(0,100,20))
 
+plot_strains100k
+
+ggsave("genomewide_fst_plots_strains_plot_jm100k.png", width = 170, height = 150, units="mm")
 ```
+![](../04_analysis/genomewide_fst_plots_strains_plot_jm100k.png")
+
+
+
 
 ### bring all plots together
 ```R
