@@ -1,6 +1,7 @@
 # Cleaning up the genome
 
-### Stephen Doyle
+### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
+
 
 - filtering the extra contigs not scaffolded in the genome
 - identfying true contamination, ie, bacterial contigs
@@ -231,17 +232,17 @@ samtools faidx -o ASSEMBLY_230308.fa CURRENT_ASSEMBLY_mtDNA.fa "${remove_ids[@]}
 
 
 
-
+```bash
 bsub.py --queue long --threads 20 20 prothint "/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/ProtHint/bin/prothint.py --threads 20 extra.list.fa /nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/ProtHint/databases/odb10_metazoa/odb10_metazoa_proteins.fa"
 
 bsub.py --queue long --threads 20 20 braker2 "/lustre/scratch118/infgen/team133/sd21/software/TRANSCRIPTOME/BRAKER_v2.0/braker.pl --genome=cjohnstoni_genome_200917.fa --hints=prothint_augustus.gff3 --gff3 --cores 20 --extrinsicCfgFile=extrinsic.M.RM.E.W.P.C.cfg"
 
+```
 
 
 
 
-
-
+```bash
 cut -f3 full_table.tsv | sort | uniq 
 
 
@@ -273,3 +274,4 @@ ln -s contigs.w.duplicates.list remove.list
 remove_ids=($(awk '{print $1}' tc_ASSEMBLY_230308.arrow.fa.PolcaCorrected.fa.fai | grep -x -v -f remove.list))
 
 samtools faidx -o ASSEMBLY_230317.fa tc_ASSEMBLY_230308.arrow.fa.PolcaCorrected.fa "${remove_ids[@]}"
+```

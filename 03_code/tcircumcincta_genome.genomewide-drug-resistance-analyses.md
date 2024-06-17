@@ -1,6 +1,6 @@
-# tcircumcincta_genome - genome-wide analyses
+# Teladorsagia circumcincta genome analysis: genome-wide analyses
 
-### Stephen Doyle
+### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
 
 ## Overall aims
 - to identifiy regions of the genome containing genes associated with drug treatment response

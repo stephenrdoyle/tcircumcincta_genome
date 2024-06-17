@@ -1,5 +1,6 @@
-# Genome comparisons
+# Teladorsagia circumcincta genome analysis: Genome comparisons
 
+### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
 
 
 ## Cumulative genome size plots

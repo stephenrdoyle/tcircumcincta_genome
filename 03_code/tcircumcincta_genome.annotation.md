@@ -1,18 +1,12 @@
 # Teladorsagia circumcincta genome annotation
 
+### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
 
 
-
-Approaches
-- Braker2 with Tcirc RNAseq data from Moredun
-- Braker2 with metazoan proteins
-- Braker2 with Haemonchus proteins
-
-
-
-
-
-
+- Approaches
+    - Braker2 with Tcirc RNAseq data from Moredun
+    - Braker2 with metazoan proteins
+    - Braker2 with Haemonchus proteins
 
 
 
@@ -199,6 +193,10 @@ bsub.py --queue long --threads 8 20 braker_bams "bash ./run_braker_bams.sh"
 ```
 
 
+
+
+
+
 # proteins and bams
 braker.pl --genome=genome.fa --prot_seq=orthodb.fa \
     --bam=/path/to/SRA_ID1.bam,/path/to/SRA_ID2.bam
@@ -366,7 +364,7 @@ bsub.py --queue hugemem --threads 8 200 braker_complete "bash ./run_braker_compl
 
 
 
-
+```bash
 conda activate busco_5.4.3
 
 bsub.py --queue yesterday --threads 1 10 busco_nematoda_odb10 \
@@ -385,7 +383,7 @@ for i in ` ls -1 *_1.fastq.gz | sed 's/_1.fastqq.gz//g'`; do
     done
 
 rm *tcirc.bam *tcirc.sam
-
+```
 
 
 
@@ -393,7 +391,7 @@ rm *tcirc.bam *tcirc.sam
 
 # merged RNAseq data
 
-```
+```bash
 module load ISG/singularity/3.10.0
 
 ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
@@ -420,7 +418,7 @@ ${BRAKER_SIF} braker.pl \
 --bam=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/merged.n-storted.bam
 ```
 
-```
+```bash
 module load ISG/singularity/3.10.0
 
 ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
@@ -489,7 +487,7 @@ bsub.py --queue long --threads 8 20 braker_prot "bash ./run_braker_proteins-only
 ```
 
 
-
+```bash
 module load ISG/singularity/3.10.0
 
 ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
@@ -516,14 +514,14 @@ ${BRAKER_SIF} braker.pl \
 --threads=20 \
 --prot_seq=/lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/haemonchus_contortus.PRJEB506.WBPS18.protein.fa2 \
 --bam=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_10.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_11.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_12.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_13.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_14.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_15.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_1.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_2.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_3.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_4.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_5.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_6.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_7.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_8.tcirc_nsorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_9.tcirc_nsorted.bam
+```
 
 
 
 
 
 
-
-
+```bash
 # combining braker and augustus intermediate GFFs
 
 braker.gff3
@@ -573,24 +571,25 @@ bsub.py --queue long --threads 20 40 busco_braker_augustus.tc2.4.proteins "busco
 bsub.py --queue long --threads 20 40 busco_braker.tc2.4.proteins "busco --in braker.tc2.4.proteins.fa --out braker.tc2.4.proteins --mode protein --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"
 
 bsub.py --queue long --threads 20 40 busco_hon.proteins "busco --in haemonchus_contortus.PRJEB506.WBPS18.protein.fa --out hcon.proteins --mode protein --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"
+```
 
 
-# braker 
-C:89.1%[S:42.7%,D:46.4%],F:0.7%,M:10.2%,n:3131
+- braker 
+    - C:89.1%[S:42.7%,D:46.4%],F:0.7%,M:10.2%,n:3131
 
-# braker 2.4
-C:88.7%[S:43.6%,D:45.1%],F:0.6%,M:10.7%,n:3131
+- braker 2.4
+    - C:88.7%[S:43.6%,D:45.1%],F:0.6%,M:10.7%,n:3131
 
-# braker + augustus 2.4
-C:95.3%[S:46.9%,D:48.4%],F:1.0%,M:3.7%,n:3131
+- braker + augustus 2.4
+    - C:95.3%[S:46.9%,D:48.4%],F:1.0%,M:3.7%,n:3131
 
-# Haemonchus
-C:96.2%[S:85.1%,D:11.1%],F:0.5%,M:3.3%,n:3131
-
-
+- Haemonchus
+    - C:96.2%[S:85.1%,D:11.1%],F:0.5%,M:3.3%,n:3131
 
 
 
+
+```bash
 # clean up the braker gff
 gt gff3 -force -tidy -setsource braker -o braker.tc2.4.gt.gff3 braker.tc2.4.gff3
 #> gene = 16694
@@ -753,12 +752,11 @@ cat braker_augustus.apollo.2.4.sorted.gff3 | cut -f3 | sort | uniq -c | grep -v 
 # compress for viewing in apollo
 bgzip braker_augustus.apollo.2.4.sorted.gff3
 tabix braker_augustus.apollo.2.4.sorted.gff3.gz
+```
 
 
 
-
-
-
+```bash
 # check protein completeness of original, and filtered for longest isoform
 #- generate protein sequences from gff
 grep -v "rRNA" braker_augustus.apollo.2.4.sorted.gff3 | gffread - -g teladorsagia_circumcincta_tci2_wsi2.4.fa -y braker_augustus.apollo.2.4.proteins.fa
@@ -782,12 +780,12 @@ C:95.7%[S:47.2%,D:48.5%],F:0.9%,M:3.4%,n:3131
 # braker + augustus + apollo - longest isoform
 C:95.7%[S:81.2%,D:14.5%],F:0.9%,M:3.4%,n:3131
 
+```
 
 
 
 
-
-
+```bash
 # renaming GFF
 
 # STEP 1 - generate using IDs for each gene
@@ -851,14 +849,14 @@ tabix braker_augustus.apollo.2.4.clean.gff3.gz
 
 
 /nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/AGAT/bin/agat_sp_webApollo_compliant.pl --gff braker_augustus.apollo.2.4.clean.gff3 --output braker_augustus.apollo.2.4.apollo.gff3
-
+```
 
 
 
 
 
 ## interproscan
-
+```bash
 module load interproscan/5.57-90.0
 
 ### interproscan
@@ -884,6 +882,7 @@ grep ^'\#\#\|hc' tmp.gff.go.gff | grep -v "mtDNA" | grep -v "FASTA" | grep -v ">
 ```
 
 
+```bash
 fastaq split_by_base_count PROTEINS.fa tc_proteins_ --max_seqs 100 10000000
 
 
@@ -902,6 +901,7 @@ conda activate agat
 cat IPS_OUT/*tsv > ips_collated.tsv
 
 agat_sp_manage_functional_annotation.pl -f braker_augustus.apollo.2.4.clean.gff3 -i ips_collated.tsv --output braker_augustus.apollo.2.4.ips
+```
 
 
 
@@ -909,8 +909,7 @@ agat_sp_manage_functional_annotation.pl -f braker_augustus.apollo.2.4.clean.gff3
 
 
 
-
-
+```bash
 ####----- TESTING
 
 
@@ -999,10 +998,10 @@ bedtools subtract -A -s -a test.new_annotation.gt.gff -b Annotations_R2.tc2.4.gt
 # extract the gene coords from both annotations, and then compare with bedtools subtract
 # cat test.new_annotation.gt.gff | awk '{if($3=="gene") print}' > test.new_annotation.gt.gff.genes
 # cat Annotations_R2.tc2.4.gt.gff3  | awk '{if($3=="gene") print}' > Annotations_R2.tc2.4.gt.gff3.genes
+```
 
 
-
-
+```bash
 wc -l R2.gene_ids_to_keep.list
 22963 R2.gene_ids_to_keep.list
 
@@ -1056,12 +1055,12 @@ cut -f3 R2.new_annotation.gt.gff | grep -v "#" | sort | uniq -c
 
 
 agat_sp_add_start_and_stop.pl --gff R2.new_annotation.gt.gff --fasta teladorsagia_circumcincta_tci2_wsi2.4.fa --out R2.new_annotation.gt.start.stop.gff
+```bash
 
 
 
 
-
-
+```bash
 # renaming GFF
 
 # STEP 1 - generate using IDs for each gene
@@ -1170,11 +1169,12 @@ bsub.py --queue long --threads 20 40 busco_combined "busco --in braker.augustus.
 
 bsub.py --queue long --threads 20 40 busco_combined_longest "busco --in braker.augustus.apollo.2.4.2.renamed.proteins.longest-isoform.fa --out braker.augustus.apollo.2.4.2.renamed.proteins.longest-isoform --mode protein --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"
 
+```bash
 
 
 
-
-
+### compleasm
+```bash
 conda activate compleasm
 
 braker.augustus.apollo.2.4.2.renamed.proteins.fa
@@ -1185,11 +1185,11 @@ miniprot --trans -u -I --outs=0.95 --gff -t 8 teladorsagia_circumcincta_tci2_wsi
 # analysis with miniprot output gff file
 bsub.py 10 compleasm_tc_2.4.2 "compleasm analyze -g tc_2.4.2.gff -o compleasm_tc_2.4.2 -l nematoda -t 8 --library_path /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/BUSCO/mb_downloads"
 
+```
 
 
 
-
-
+```bash
 #### ---- TESTING 
 
 mkdir FIX_MISSING_GENES
@@ -1305,15 +1305,4 @@ tabix tcircumcincta.v2.5.gff3.gz
 
 cat tcircumcincta.v2.5.gff3 | awk -F'[\t;]' '{if($3=="gene") print $9,$1,$4,$5,$7}' OFS="\t" | sed 's/ID=//g' | sort -k2,2V -k3,3n > tcircumcincta.v2.5.genes.list
 
-
-
-
-
-
-split -l 8000 tcircumcincta.v2.5.proteins.l0.fa
-
-for i in x*; do
-interproscan.sh --cpu 10 -i ${i} -dp -iprlookup --goterms; 
-done
-
-cat *tsv > ips_combined.tsv
+```

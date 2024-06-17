@@ -278,16 +278,16 @@ samtools faidx -o ASSEMBLY_230322.fa arrow_polca_polished_plus_clean.fa "${remov
 
 
 ### Polish with Polca using RNAseq reads
-
+```bash
 bsub.py --queue basement --threads 7 20 polca_RNAseq "/nfs/users/nfs_s/sd21/lustre_link/software/GENOME_IMPROVEMENT/MaSuRCA-4.1.0/global-1/PacBio/src_reconcile/polca.sh -a tc_ASSEMBLY_230308.arrow.fa.PolcaCorrected.fa -r \"rnaseq_merged_1.fastq.gz rnaseq_merged_2.fastq.gz\" -t 7 -m 2G"
 
 
 bsub.py --queue long --threads 20 60 busco_tc_polca_RNAseq_nematoda_odb10 \
     "busco --in tc_ASSEMBLY_230308.arrow.fa.PolcaCorrected.fa.PolcaCorrected.fa --out busco_tc_polca_RNAseq_nematoda_odb10 --mode genome --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"
+```
 
 
-
-
+```bash
 # print only contigs with duplicate BUSCOS, but no complete or fragmented BUSCOs
 cat full_table.tsv | grep -v "#" |  cut -f3  | sort | uniq  | while read -r NAME; do 
     Complete=$(cat full_table.tsv | grep $NAME | grep -c "Complete" ); 
@@ -304,3 +304,5 @@ samtools faidx -o ASSEMBLY_230402.fa tc_ASSEMBLY_230322.arrow.fa.PolcaCorrected.
 
 bsub.py --queue normal --threads 20 60 busco_tc_ASSEMBLY_230402_nematoda_odb10 \
     "busco --in ASSEMBLY_230402.fa --out busco_tc_ASSEMBLY_230402_nematoda_odb10 --mode genome --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"
+
+```

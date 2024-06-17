@@ -1,10 +1,10 @@
 # T. circumcincta genome: beta tubulin analyses
 
+### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
 
 
 
-
-### plotting jenni's blast results of beta-tubulin against pacbio subreads
+## plotting jenni's blast results of beta-tubulin against pacbio subreads
 ```R
 library(tidyverse)
 

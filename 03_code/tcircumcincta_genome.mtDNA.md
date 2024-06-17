@@ -1,6 +1,6 @@
-# Fix mitochondrial genome
+# Teladorsagia circumcincta genome analysis: Fix mitochondrial genome
 
-### Stephen Doyle
+### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
 
 
 - need to curate the mtDNA genome
@@ -85,17 +85,5 @@ samtools faidx -o output.fasta CURRENT_ASSEMBLY.fa "${remove_ids[@]}"
 cat output.fasta tc_assembly_mtDNA_genome.fa > CURRENT_ASSEMBLY_mtDNA.fa
 ```
 
-
-
-stats for CURRENT_ASSEMBLY_mtDNA.fa
-sum = 644904321, n = 3382, ave = 190687.26, largest = 94624076
-N50 = 83760063, n = 4
-N60 = 77880069, n = 5
-N70 = 62249764, n = 6
-N80 = 1856228, n = 11
-N90 = 64366, n = 362
-N100 = 1199, n = 3382
-N_count = 3982291
-Gaps = 12486
 
 

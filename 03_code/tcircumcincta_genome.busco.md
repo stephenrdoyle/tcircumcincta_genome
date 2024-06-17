@@ -179,9 +179,3 @@ bsub.py --queue long --threads 20 30 busco_tc_canu1.9_genome_eukaryota_odb10 "bu
 bsub.py --queue long --threads 20 30 busco_tc_canu1.9_genome_metazoa_odb10 "busco --in tc_canu1.9.contigs.fasta --out tc_canu1.9_genome_metazoa_odb10 --mode genome --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/metazoa_odb10 --cpu 20 -f -r"
 
 ```
-
-
-
-
-bsub.py --queue long --threads 20 60 busco_tc_genome_nematoda_odb10 \
-    "busco --in Tc22_2_ragtag_mc.curated_primary.no_mt.unscrubbed.fa --out genome_nematoda_odb10 --mode genome --lineage_dataset /nfs/users/nfs_s/sd21/lustre_link/databases/busco/nematoda_odb10 --cpu 20 -f -r"

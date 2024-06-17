@@ -1,3 +1,4 @@
+# Teladorsagia circumcincta genome analysis: exon / gene coverage
 
 
 
@@ -120,15 +121,6 @@ ggsave("gene_coverage_ratios_pgp-9.pdf", height=200, width=170, units="mm")
 
 
 
-
-
-
-
-
-
-
-
-
 stat <- function(file) {
 
 library(tidyverse)
@@ -231,3 +223,5 @@ g <- plot("Tci2_Tci7.bed.cov")
 
 
 a+b+c+d+e+f+g + plot_layout(ncol=1)
+
+```
