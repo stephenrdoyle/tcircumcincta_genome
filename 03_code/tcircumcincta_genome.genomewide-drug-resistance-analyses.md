@@ -153,8 +153,47 @@ plot_jm100k
 
 ggsave("genomewide_fst_plots_farm_plot_jm100k.png", width = 170, height = 100, units="mm")
 
+
+
+# plot of Farm2 preA vs Farm2 preB to show how technical variation and genomewide significance
+jm100k_gw_control <- jm100k %>% select(chrom, start, end, snps, F3_PRE_A.1.F3_PRE_B.1)
+jm100k_gw_control$name <- "F2_PRE-A_F2_PRE-B"
+colnames(jm100k_gw_control) <- c("chrom", "start", "end", "snps", "fst", "name")
+
+gw_sig <- jm100k %>% summarise(gw=mean(F3_PRE_A.1.F3_PRE_B.1) + 5*sd(F3_PRE_A.1.F3_PRE_B.1))
+
+plot_jm100k_gw_control <- ggplot(jm100k_gw_control, aes((start+50000)/1e6, fst, col=chrom)) + 
+    geom_point(size=0.15) + 
+    labs(title="") +
+    facet_grid(name ~ chrom , space="free_x", scales="free_x", switch="x") +
+    theme_bw() + 
+    ylim(0,0.1) +
+    theme(panel.spacing.x = unit(0, "lines"), legend.position = "none", text = element_text(size = 10), strip.text.y = element_text(size = 6)) +
+    labs(x="Genomic position (Mb)", y="Fst") +
+    scale_colour_manual(values=colours) +
+    geom_hline(yintercept=gw_sig$gw, linetype='dashed') +
+    scale_x_continuous(breaks=seq(0,100,20))
+
+plot_jm100k_gw_control
+
+ggsave("genomewide_fst_plots_farm_plot_jm100k_gw_control.png", width = 170, height = 50, units="mm")
 ```
 ![](../04_analysis/genomewide_fst_plots_farm_plot_jm100k.png)
+
+![](../04_analysis/genomewide_fst_plots_farm_plot_jm100k_gw_control.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
