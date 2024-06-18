@@ -184,22 +184,31 @@ bsub.py 1 grendalf_all_fst \
 --sam-path F3_PRE_A.bam"
 
 
-head tc_strains_poolseqfst.csv | sed -e 's/\.1:/:/g' -e 's/\.1$//g' -e 's/\.1\t/\t/g' -e  's/\-/_/g' > test.fst
+cat tc_strains_poolseqfst.csv | head -n1 | sed -e 's/\.1//g' -e  's/\-/_/g' > header
+cat tc_strains_poolseqfst.csv | grep -v "chrom" > data
 
-data <- read.delim("test.fst")
+cat header data > tc_strains_poolseqfst.clean.txt
+
+
+library(tidyverse)
+library(viridis)
+
+data <- read.delim("tc_strains_poolseqfst.clean.txt", sep="\t")
 data <- data %>% filter(., grepl("tci2_wsi3.0_chr", chrom)) %>% 
     filter(., !grepl("tci2_wsi3.0_chrX", chrom))  %>% 
-    filter(., !grepl("tci2_wsi3.0_chr_mtDNA", chrom)) %>% 
-    filter_all(all_vars(!is.infinite(.))) %>% 
-    filter_all(all_vars(!is.nan(.)))
+    filter(., !grepl("tci2_wsi3.0_chr_mtDNA", chrom)) %>%
+    select(-chrom, -start, -end, -snps)
+    
 
-data2 <- head(data) %>% summarise(across(5:82, mean))
-data3 <- head(data2) %>% gather(key="group", value="fst", 1:78)
+data2 <- data %>% summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
+
+data3 <- data2 %>% gather(key="group", value="fst", 1:78)
 data4 <- data3 %>% separate_wider_delim(group, ".", names = c("A", "B"))
 
 
 ggplot(data4, aes(A, B, fill=fst)) + 
     geom_tile() + 
+    geom_text(aes(label=round(fst, digits = 3)), colour="white") +
     theme(axis.text.x = element_text(angle = 45, hjust=1)) +
     scale_fill_viridis()
 
