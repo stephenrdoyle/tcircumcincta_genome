@@ -1,5 +1,7 @@
 # Teladorsagia circumcincta genome analysis: exon / gene coverage
 
+### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
+
 
 
 ```bash

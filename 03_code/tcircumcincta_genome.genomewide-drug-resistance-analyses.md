@@ -101,10 +101,163 @@ bsub.py 1 grendalf_farm_fst \
 --sam-path F3_POST_A.bam \
 --sam-path F3_POST_B.bam \
 --sam-path F3_PRE_A.bam \
---sam-path F3_PRE_B.bam \
+--sam-path F3_PRE_B.bam"
+
+# choi data
+bsub.py 1 grendalf_choi_fst \
+"grenedalf fst 
+--reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
+--allow-file-overwriting \
+--method unbiased-nei \
+--file-prefix tc_choi_poolseq \
+--sam-min-map-qual 30 \
+--sam-min-base-qual 30 \
+--filter-sample-min-count 2 \
+--filter-sample-min-coverage 10 \
+--filter-sample-max-coverage 100 \
+--pool-sizes 800 \
+--window-type sliding \
+--window-sliding-width 100000 \
+--write-pi-tables \
+--separator-char tab \
 --sam-path RS3.bam \
 --sam-path SINBRED.bam"
+
+# strain data
+bsub.py 1 grendalf_choi_fst \
+"grenedalf fst \
+--reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
+--allow-file-overwriting \
+--method unbiased-nei \
+--file-prefix tc_strains_poolseq \
+--sam-min-map-qual 30 \
+--sam-min-base-qual 30 \
+--filter-sample-min-count 2 \
+--filter-sample-min-coverage 10 \
+--filter-sample-max-coverage 100 \
+--pool-sizes 200 \
+--window-type sliding \
+--window-sliding-width 100000 \
+--write-pi-tables \
+--separator-char tab \
+--sam-path MTci1_pool_adultMF_post-BZ.bam \
+--sam-path MTci2_pool_adultMF.bam \
+--sam-path MTci2_pool_L4.bam \
+--sam-path MTci5_pool_adultMF_post-BZ.bam \
+--sam-path MTci5_pool_adultM_post-IVM.bam \
+--sam-path MTci5_pool_L4_MOTRI.bam \
+--sam-path MTci7_pool_adultMF_MOX-R.bam"
 ```
+
+
+
+```bash
+# strain data
+bsub.py 1 grendalf_all_fst \
+"grenedalf fst \
+--reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
+--allow-file-overwriting \
+--method unbiased-nei \
+--file-prefix tc_strains_poolseq \
+--sam-min-map-qual 30 \
+--sam-min-base-qual 30 \
+--filter-sample-min-count 2 \
+--filter-sample-min-coverage 10 \
+--filter-sample-max-coverage 100 \
+--pool-sizes 200 \
+--window-type sliding \
+--window-sliding-width 100000 \
+--write-pi-tables \
+--separator-char tab \
+--sam-path MTci1_pool_adultMF_post-BZ.bam \
+--sam-path MTci2_pool_adultMF.bam \
+--sam-path MTci2_pool_L4.bam \
+--sam-path MTci5_pool_adultMF_post-BZ.bam \
+--sam-path MTci5_pool_adultM_post-IVM.bam \
+--sam-path MTci5_pool_L4_MOTRI.bam \
+--sam-path MTci7_pool_adultMF_MOX-R.bam \
+--sam-path RS3.bam \
+--sam-path SINBRED.bam \
+--sam-path F2_POST.bam \
+--sam-path F2_PRE.bam \
+--sam-path F3_POST_A.bam \
+--sam-path F3_PRE_A.bam"
+```
+
+
+```bash
+ln -s ../../../GENOME/ANNOTATION/V3/teladorsagia_circumcincta_tci2_wsi3.0.annotation.gff3
+
+bsub.py 1 grendalf_all_freq \
+"grenedalf frequency \
+--reference-genome-fasta-file teladorsagia_circumcincta_tci2_wsi3.0.genome.fa \
+--allow-file-overwriting \
+--multi-file-locus-set intersection \
+--file-prefix tc_poolseq_freq \
+--sam-min-map-qual 30 \
+--sam-min-base-qual 30 \
+--filter-region-gff teladorsagia_circumcincta_tci2_wsi3.0.annotation.gff3 \
+--write-sample-alt-freq \
+--write-sample-coverage \
+--write-total-coverage \
+--separator-char tab \
+--sam-path MTci1_pool_adultMF_post-BZ.bam \
+--sam-path MTci2_pool_adultMF.bam \
+--sam-path MTci2_pool_L4.bam \
+--sam-path MTci5_pool_adultMF_post-BZ.bam \
+--sam-path MTci5_pool_adultM_post-IVM.bam \
+--sam-path MTci5_pool_L4_MOTRI.bam \
+--sam-path MTci7_pool_adultMF_MOX-R.bam \
+--sam-path RS3.bam \
+--sam-path SINBRED.bam \
+--sam-path F2_POST.bam \
+--sam-path F2_PRE.bam \
+--sam-path F3_POST_A.bam \
+--sam-path F3_PRE_A.bam"
+
+
+coverage=20
+cat tc_poolseq_freqfrequency.csv | awk -v coverage=${coverage} '{if($7>=coverage && $9 >= coverage && $11>=coverage && $13>=coverage && $15>=coverage && $17>=coverage && $19>=coverage && $21>=coverage && $23>=coverage && $25>=coverage && $27>=coverage && $29>=coverage && $31>=coverage) print $1, $2, $6,$8,$10,$12,$14,$16, $18, $20, $22, $24, $26, $28, $30}' OFS="\t" > tc_poolseq_freqfrequency.filtered.txt
+
+sed -i 's/.1.FREQ//g' tc_poolseq_freqfrequency.filtered.txt
+
+
+
+library(tidyverse)
+library(ggrepel)
+
+data <- read.delim("tc_poolseq_freqfrequency.filtered.txt")
+data <- data %>% 
+    filter(., grepl("tci2_wsi3.0_chr", CHROM)) %>% 
+    filter(., !grepl("tci2_wsi3.0_chrX", CHROM))  %>% 
+    filter(., !grepl("tci2_wsi3.0_chr_mtDNA", CHROM)) %>% 
+    filter_all(all_vars(!is.infinite(.))) %>% 
+    filter_all(all_vars(!is.nan(.))) %>%
+    select(-CHROM, -POS)
+
+colnames(data) <- c("Farm 1 (post)",	"Farm 1 (pre)",	"Farm 2 (post)",	"Farm 2 (pre)",	"MTci1",	"MTci2_L4",	"MTci2", "MTci5",	"MTci5 (post-BZ)",	"MTci5 (post-IVM)",	"MTci7",	"RS3",	"Sinbred")
+
+
+pca <- prcomp(data, scale=T)
+
+
+pca_data <- as.data.frame(pca$rotation[])
+pca_data$group <- c(rep("Farm", 4), rep("Strain", 7), rep("Choi", 2) )
+
+ggplot(pca_data, aes(PC1, PC2, colour=group)) + 
+    geom_point() + 
+    geom_text_repel(aes(label=rownames(pca_data)), max.overlaps = Inf, size=3) +
+    theme_bw()
+
+
+ggsave("PCA_all-samples_variant-freq.png", height=100, width=100, units="mm")
+```
+![](../04_analysis/PCA_all-samples_variant-freq.png)
+
+
+
+
+
 
 
 
@@ -657,7 +810,30 @@ ggsave("plot_orthologs.png", height=50, width=170, units="mm")
 ```bash
 ln -s ~sd21/lustre_link/haemonchus_contortus/XQTL/05_ANALYSIS/IVM/XQTL_IVM.merged.fst
 
+bsub.py 1 grendalf_hc_xqtl_ivm_fst \
+"grenedalf fst \
+--reference-genome-fasta-file HAEM_V4_final.chr.fa \
+--allow-file-overwriting \
+--method unbiased-nei \
+--file-prefix hc_xqtl_ivm_poolseq \
+--sam-min-map-qual 30 \
+--sam-min-base-qual 30 \
+--filter-sample-min-count 2 \
+--filter-sample-min-coverage 10 \
+--filter-sample-max-coverage 200 \
+--pool-sizes 400 \
+--window-type sliding \
+--window-sliding-width 10000 \
+--write-pi-tables \
+--separator-char tab \
+--sam-path XQTL_F3_L3_n200_IVM_pre_01.bam \
+--sam-path XQTL_F3_L3_n200_IVM_post_01.bam \
+--sam-path XQTL_F3_L3_n200_IVM_pre_02.bam \
+--sam-path XQTL_F3_L3_n200_IVM_post_02.bam \
+--sam-path XQTL_F3_L3_n200_IVM_pre_03.bam \
+--sam-path XQTL_F3_L3_n200_IVM_post_03.bam"
 ``` 
+
 
 ```R
 rawdata_hc <- read.table("hc_xqtl_ivm_poolseqfst.csv", header = T)

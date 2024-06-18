@@ -1,4 +1,4 @@
-# Cleaning up the genome
+# Teladorsagia circumcincta genome analysis: Cleaning up the genome
 
 ### author: Stephen Doyle, stephen.doyle[at]sanger.ac.uk
 
