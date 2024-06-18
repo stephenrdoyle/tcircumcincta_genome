@@ -246,11 +246,11 @@ pca_data$group <- c(rep("Farm", 4), rep("Strain", 7), rep("Choi", 2) )
 
 ggplot(pca_data, aes(PC1, PC2, colour=group)) + 
     geom_point() + 
-    geom_text_repel(aes(label=rownames(pca_data)), max.overlaps = Inf, size=3) +
+    geom_text_repel(aes(label=rownames(pca_data)), max.overlaps = Inf, size=2.5) +
     theme_bw()
 
 
-ggsave("PCA_all-samples_variant-freq.png", height=100, width=100, units="mm")
+ggsave("PCA_all-samples_variant-freq.png", height=100, width=170, units="mm")
 ```
 ![](../04_analysis/PCA_all-samples_variant-freq.png)
 
