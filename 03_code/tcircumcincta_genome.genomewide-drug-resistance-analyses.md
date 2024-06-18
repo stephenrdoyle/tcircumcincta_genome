@@ -182,8 +182,38 @@ bsub.py 1 grendalf_all_fst \
 --sam-path F2_PRE.bam \
 --sam-path F3_POST_A.bam \
 --sam-path F3_PRE_A.bam"
-```
 
+
+head tc_strains_poolseqfst.csv | sed -e 's/\.1:/:/g' -e 's/\.1$//g' -e 's/\.1\t/\t/g' -e  's/\-/_/g' > test.fst
+
+data <- read.delim("test.fst")
+data <- data %>% filter(., grepl("tci2_wsi3.0_chr", chrom)) %>% 
+    filter(., !grepl("tci2_wsi3.0_chrX", chrom))  %>% 
+    filter(., !grepl("tci2_wsi3.0_chr_mtDNA", chrom)) %>% 
+    filter_all(all_vars(!is.infinite(.))) %>% 
+    filter_all(all_vars(!is.nan(.)))
+
+data2 <- head(data) %>% summarise(across(5:82, mean))
+data3 <- head(data2) %>% gather(key="group", value="fst", 1:78)
+data4 <- data3 %>% separate_wider_delim(group, ".", names = c("A", "B"))
+
+
+ggplot(data4, aes(A, B, fill=fst)) + 
+    geom_tile() + 
+    theme(axis.text.x = element_text(angle = 45, hjust=1)) +
+    scale_fill_viridis()
+
+
+ggsave("pairwise_Fst_allsamples.png", height=100, width=120, units="mm")
+```
+![](../04_analysis/pairwise_Fst_allsamples.png)
+
+
+
+## Comparion of different samples - PCA
+- want to try make a PCA using variant frequencies of the pooled sequencing data
+- restricting it to coding sequence variation, hence using the GFF
+- also adding a more stringent coverage cutoff, to increase the signal
 
 ```bash
 ln -s ../../../GENOME/ANNOTATION/V3/teladorsagia_circumcincta_tci2_wsi3.0.annotation.gff3
@@ -216,13 +246,16 @@ bsub.py 1 grendalf_all_freq \
 --sam-path F3_PRE_A.bam"
 
 
+# need to add some additional filters, eg coverage
+
 coverage=20
 cat tc_poolseq_freqfrequency.csv | awk -v coverage=${coverage} '{if($7>=coverage && $9 >= coverage && $11>=coverage && $13>=coverage && $15>=coverage && $17>=coverage && $19>=coverage && $21>=coverage && $23>=coverage && $25>=coverage && $27>=coverage && $29>=coverage && $31>=coverage) print $1, $2, $6,$8,$10,$12,$14,$16, $18, $20, $22, $24, $26, $28, $30}' OFS="\t" > tc_poolseq_freqfrequency.filtered.txt
 
 sed -i 's/.1.FREQ//g' tc_poolseq_freqfrequency.filtered.txt
 
+```
 
-
+```R
 library(tidyverse)
 library(ggrepel)
 
@@ -246,7 +279,7 @@ pca_data$group <- c(rep("Farm", 4), rep("Strain", 7), rep("Choi", 2) )
 
 ggplot(pca_data, aes(PC1, PC2, colour=group)) + 
     geom_point() + 
-    geom_text_repel(aes(label=rownames(pca_data)), max.overlaps = Inf, size=2.5) +
+    geom_text_repel(aes(label=rownames(pca_data)), max.overlaps = Inf, size=2) +
     theme_bw()
 
 
