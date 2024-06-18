@@ -213,7 +213,7 @@ ggplot(data4, aes(A, B, fill=fst)) +
     scale_fill_viridis()
 
 
-ggsave("pairwise_Fst_allsamples.png", height=100, width=120, units="mm")
+ggsave("pairwise_Fst_allsamples.png", height=200, width=220, units="mm")
 ```
 ![](../04_analysis/pairwise_Fst_allsamples.png)
 
