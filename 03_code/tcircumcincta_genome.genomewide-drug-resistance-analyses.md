@@ -188,32 +188,69 @@ cat tc_strains_poolseqfst.csv | head -n1 | sed -e 's/\.1//g' -e  's/\-/_/g' > he
 cat tc_strains_poolseqfst.csv | grep -v "chrom" > data
 
 cat header data > tc_strains_poolseqfst.clean.txt
+```
 
-
+```R
 library(tidyverse)
 library(viridis)
 
+# Read data
 data <- read.delim("tc_strains_poolseqfst.clean.txt", sep="\t")
-data <- data %>% filter(., grepl("tci2_wsi3.0_chr", chrom)) %>% 
-    filter(., !grepl("tci2_wsi3.0_chrX", chrom))  %>% 
-    filter(., !grepl("tci2_wsi3.0_chr_mtDNA", chrom)) %>%
-    select(-chrom, -start, -end, -snps)
-    
 
-data2 <- data %>% summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
+# Filter and select relevant data
+data <- data %>%
+  filter(grepl("tci2_wsi3.0_chr", chrom)) %>%
+  filter(!grepl("tci2_wsi3.0_chrX", chrom)) %>%
+  filter(!grepl("tci2_wsi3.0_chr_mtDNA", chrom)) %>%
+  select(-chrom, -start, -end, -snps)
 
-data3 <- data2 %>% gather(key="group", value="fst", 1:78)
-data4 <- data3 %>% separate_wider_delim(group, ".", names = c("A", "B"))
+# Summarize data by taking the mean of each numeric column
+data2 <- data %>%
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
 
-
-ggplot(data4, aes(A, B, fill=fst)) + 
-    geom_tile() + 
-    geom_text(aes(label=round(fst, digits = 3)), colour="white") +
-    theme(axis.text.x = element_text(angle = 45, hjust=1)) +
-    scale_fill_viridis()
+# Reshape data from wide to long format
+data3 <- data2 %>%
+  gather(key = "group", value = "fst", 1:78)
 
 
-ggsave("pairwise_Fst_allsamples.png", height=200, width=220, units="mm")
+# Separate the 'group' column into two new columns 'A' and 'B'
+data4 <- data3 %>%
+  separate(group, into = c("A", "B"), sep = "\\.")
+
+# Create a tibble with all pairwise combinations
+all_combinations <- expand.grid(A = unique(data4$A), B = unique(data4$B))
+# Ensure the tibble contains both A-B and B-A combinations
+all_combinations <- bind_rows(all_combinations, 
+                              all_combinations %>% rename(A = B, B = A)) %>%
+  distinct()
+
+# Join the summarized Fst data with all combinations to fill in missing pairs
+data_complete <- all_combinations %>%
+  left_join(data4, by = c("A", "B"))
+
+# Fill in NA values with the corresponding values from the opposite pair (B-A)
+data_complete <- data_complete %>%
+  left_join(data4, by = c("A" = "B", "B" = "A"), suffix = c("", ".y")) %>%
+  mutate(fst = ifelse(is.na(fst), fst.y, fst)) %>%
+  select(A, B, fst)
+
+# Filter to show only the upper triangle
+data_upper <- data_complete %>%
+  filter(A < B)
+
+# Create a heatmap using ggplot2
+ggplot(data_upper) +
+  geom_tile(aes(x = A, y = B, fill = fst)) +
+  geom_text(aes(x = A, y = B, label = round(fst, digits = 3)), colour = "white") +
+  scale_fill_viridis(limits=c(0,0.301)) +
+  theme_bw() +
+  labs(x = "", y = "", fill="Fst") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+ggsave("pairwise_Fst_allsamples.png", height=200, width=230, units="mm")
+ggsave("pairwise_Fst_allsamples.pdf", height=200, width=230, units="mm")
+
 ```
 ![](../04_analysis/pairwise_Fst_allsamples.png)
 
