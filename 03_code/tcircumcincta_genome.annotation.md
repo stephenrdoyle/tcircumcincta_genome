@@ -68,7 +68,7 @@ bsub.py --queue long --threads 16 20 rm_modeller "RepeatMasker -pa 16 -gff -nolo
 
 
 ## Map RNAseq reads
-```
+```bash
 
 cd /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING
 
@@ -95,50 +95,8 @@ rm *tcirc.bam *tcirc.sam
 ## Braker3
 
 
-```bash
-module load ISG/singularity/3.10.0
-
-ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
-
-PREFIX=tcirc_braker
-WORKDIR=${ANNOTATION_DIR}/${PREFIX}/data
-DESTDIR=${ANNOTATION_DIR}/${PREFIX}/output
-
-mkdir -p ${WORKDIR} ${DESTDIR}
-
-export SINGULARITY_BIND="/nfs:/nfs,/lustre:/lustre,$WORKDIR:/data,$DESTDIR:/output,"
-export BRAKER_SIF=/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/braker3_singularity/braker3.sif 
-
-#ln -s ../ASSEMBLY/FINAL_GENOME/teladorsagia_circumcincta_tci2_wsi1.0.fa ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa
-cp teladorsagia_circumcincta_tci2_wsi1.0.fa.masked ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked
-
-# w RNAseq test - mapping
-echo 'singularity exec \
-${BRAKER_SIF} braker.pl \
---species=teladorsagia_circumcincta \
---genome=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked \
---workingdir=${WORKDIR} \
---useexisting \
---rnaseq_sets_ids=DP_1 \
---rnaseq_sets_dirs=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RAW_DATA/Tcirc_DNBseq' 
-```
-- put all of above in the script "run_braker.sh"
-
-```bash
-# run run_braker.sh
-bsub.py --queue long --threads 7 20 braker "bash ./run_braker.sh"
-```
-
-
 # path to bam files
-braker.pl --species=yourSpecies --genome=genome.fasta \
-       --rnaseq_sets_ids=BAM_ID1,BAM_ID2 \
-       --rnaseq_sets_dirs=/path/to/local/bam/files/
-
-# actual bam files
-braker.pl --species=yourSpecies --genome=genome.fasta \
-       --bam=file1.bam,file2.bam
-
+```bash
 
 # RNAseq data from Dan Price, mapped
 /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_10.tcirc_sorted.bam
@@ -156,40 +114,6 @@ braker.pl --species=yourSpecies --genome=genome.fasta \
 /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_7.tcirc_sorted.bam
 /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_8.tcirc_sorted.bam
 /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_9.tcirc_sorted.bam
-
-
-```bash
-module load ISG/singularity/3.10.0
-
-ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
-
-PREFIX=tcirc_braker_bams
-WORKDIR=${ANNOTATION_DIR}/${PREFIX}/data
-DESTDIR=${ANNOTATION_DIR}/${PREFIX}/output
-
-mkdir -p ${WORKDIR} ${DESTDIR}
-
-export SINGULARITY_BIND="/nfs:/nfs,/lustre:/lustre,$WORKDIR:/data,$DESTDIR:/output,"
-export BRAKER_SIF=/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/braker3_singularity/braker3.sif 
-
-#ln -s ../ASSEMBLY/FINAL_GENOME/teladorsagia_circumcincta_tci2_wsi1.0.fa ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa
-cp teladorsagia_circumcincta_tci2_wsi1.0.fa.masked ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked
-
-# w RNAseq test - mapping
-singularity exec \
-${BRAKER_SIF} braker.pl \
---species=teladorsagia_circumcincta2 \
---genome=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked \
---workingdir=${WORKDIR} \
---useexisting \
---threads=8 \
---bam=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_10.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_11.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_12.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_13.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_14.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_15.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_1.tcirc.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_2.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_3.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_4.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_5.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_6.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_7.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_8.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_9.tcirc_sorted.bam 
-```
-- put all of above in the script "run_braker_bams.sh"
-
-```bash
-# run run_braker.sh
-bsub.py --queue long --threads 8 20 braker_bams "bash ./run_braker_bams.sh"
 ```
 
 
@@ -197,128 +121,21 @@ bsub.py --queue long --threads 8 20 braker_bams "bash ./run_braker_bams.sh"
 
 
 
-# proteins and bams
-braker.pl --genome=genome.fa --prot_seq=orthodb.fa \
-    --bam=/path/to/SRA_ID1.bam,/path/to/SRA_ID2.bam
-
+# download the haemonchus proteins from WBPS
+```bash
 
 # Haemonchus proteins, from WBPS
 wget https://ftp.ebi.ac.uk/pub/databases/wormbase/parasite/releases/WBPS18/species/haemonchus_contortus/PRJEB506/haemonchus_contortus.PRJEB506.WBPS18.protein.fa.gz
 
 gunzip haemonchus_contortus.PRJEB506.WBPS18.protein.fa.gz
-
-
-
-
-```bash
-module load ISG/singularity/3.10.0
-
-ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
-
-PREFIX=tcirc_braker_bams_prot
-WORKDIR=${ANNOTATION_DIR}/${PREFIX}/data
-DESTDIR=${ANNOTATION_DIR}/${PREFIX}/output
-
-mkdir -p ${WORKDIR} ${DESTDIR}
-
-export SINGULARITY_BIND="/nfs:/nfs,/lustre:/lustre,$WORKDIR:/data,$DESTDIR:/output,"
-export BRAKER_SIF=/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/braker3_singularity/braker3.sif 
-
-#ln -s ../ASSEMBLY/FINAL_GENOME/teladorsagia_circumcincta_tci2_wsi1.0.fa ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa
-cp teladorsagia_circumcincta_tci2_wsi1.0.fa.masked ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked
-
-# w RNAseq , proteins
-singularity exec \
-${BRAKER_SIF} braker.pl \
---species=teladorsagia_circumcincta3 \
---genome=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked \
---workingdir=${WORKDIR} \
---useexisting \
---threads=8 \
---prot_seq=/lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/haemonchus_contortus.PRJEB506.WBPS18.protein.fa \
---bam=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_10.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_11.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_12.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_13.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_14.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_15.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_1.tcirc.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_2.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_3.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_4.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_5.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_6.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_7.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_8.tcirc_sorted.bam,/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_9.tcirc_sorted.bam 
-```
-- put all of above in the script "run_braker_bams_prot.sh"
-
-```bash
-# run run_braker.sh
-bsub.py --queue long --threads 8 20 braker_bams_prot "bash ./run_braker_bams_prot.sh"
 ```
 
 
 
 
 
-module load ISG/singularity/3.10.0
 
-ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
-
-PREFIX=test
-WORKDIR=${ANNOTATION_DIR}/${PREFIX}/data
-DESTDIR=${ANNOTATION_DIR}/${PREFIX}/output
-
-mkdir -p ${WORKDIR} ${DESTDIR}
-
-export SINGULARITY_BIND="/nfs:/nfs,/lustre:/lustre,$WORKDIR:/data,$DESTDIR:/output,"
-export BRAKER_SIF=/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/braker3_singularity/braker3.sif 
-
-#ln -s ../ASSEMBLY/FINAL_GENOME/teladorsagia_circumcincta_tci2_wsi1.0.fa ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa
-cp teladorsagia_circumcincta_tci2_wsi1.0.fa.masked ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked
-
-# w RNAseq test - mapping
-singularity exec \
-${BRAKER_SIF} braker.pl \
---species=teladorsagia_circumcincta4 \
---genome=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked \
---workingdir=${WORKDIR} \
---useexisting \
---threads=8 \
---prot_seq=/lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/haemonchus_contortus.PRJEB506.WBPS18.protein.fa2 \
---bam=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/RNASEQ_MAPPING/DP_1.tcirc_n-sorted.bam
-
-
-
-
-
-
-```bash
-module load ISG/singularity/3.10.0
-
-ANNOTATION_DIR=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION
-
-PREFIX=tcirc_braker_prot
-WORKDIR=${ANNOTATION_DIR}/${PREFIX}/data
-DESTDIR=${ANNOTATION_DIR}/${PREFIX}/output
-
-mkdir -p ${WORKDIR} ${DESTDIR}
-
-export SINGULARITY_BIND="/nfs:/nfs,/lustre:/lustre,$WORKDIR:/data,$DESTDIR:/output,"
-export BRAKER_SIF=/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/braker3_singularity/braker3.sif 
-
-#ln -s ../ASSEMBLY/FINAL_GENOME/teladorsagia_circumcincta_tci2_wsi1.0.fa ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa
-cp teladorsagia_circumcincta_tci2_wsi1.0.fa.masked ${WORKDIR}/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked
-
-# w  proteins
-singularity exec \
-${BRAKER_SIF} braker.pl \
---species=teladorsagia_circumcincta3 \
---genome=/nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/ANNOTATION/teladorsagia_circumcincta_tci2_wsi1.0.fa.masked \
---workingdir=${WORKDIR} \
---useexisting \
---gff3 \
---threads=8 \
---prot_seq=/lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/haemonchus_contortus.PRJEB506.WBPS18.protein.fa
-```
-- put all of above in the script "run_braker_bams_prot.sh"
-
-```bash
-# run run_braker.sh
-bsub.py --queue long --threads 8 20 braker_prot "bash ./run_braker_prot.sh"
-```
-
-
-
-
+# run Braker with Haemonchus proteins and Tcirc RNAseq as evidence
 ```bash
 module load ISG/singularity/3.10.0
 
@@ -358,8 +175,6 @@ bsub.py --queue hugemem --threads 8 200 braker_complete "bash ./run_braker_compl
 
 
 
-/nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/TSEBRA/bin/tsebra.py \
---gtf /lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/tcirc_braker_prot_rna-all/data/augustus.hints.gtf,/lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/tcirc_braker_prot_rna-all/data/GeneMark-ETP/genemark.gtf --keep_gtf /lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/tcirc_braker_prot_rna-all/data/GeneMark-ETP/training.gtf --hintfiles /lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/tcirc_braker_prot_rna-all/data/hintsfile.gff --filter_single_exon_genes --cfg /nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/TSEBRA/bin/../config/braker3.cfg --out /lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/tcirc_braker_prot_rna-all/data/braker.gtf -q 2>/lustre/scratch125/pam/teams/team333/sd21/teladorsagia_circumcincta/GENOME/ANNOTATION/tcirc_braker_prot_rna-all/data/errors/tsebra.stderr
 
 
 
