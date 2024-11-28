@@ -4,8 +4,6 @@
 
 
 
-
-
 ```bash
 cd /nfs/users/nfs_s/sd21/lustre_link/teladorsagia_circumcincta/GENOME/BUSCO
 

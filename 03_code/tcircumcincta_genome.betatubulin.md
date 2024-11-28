@@ -141,3 +141,66 @@ ggsave("figure_betatubulin_variants.png", width=170, height=100, units="mm")
 
 ```
 ![](../04_analysis/figure_betatubulin_variants.png)
+
+
+
+
+
+## Counting the number of beta-tubulin genes in the genome
+
+```bash
+cat btub.Z96259.protein.fa
+>btub
+MREIVHVQAGQCGNQIGSKFWEVISDEHGIQPDGTYKGESALQL
+ERINVYYNEAHGGKYVPRAVLVDLEPGTMDSVRSGPYGQLFRPDNYVFGQSGAGNNWA
+KGHYTEGAELVDNVLDVVRKEAEGCDCLQGFQLTHSLGGGTGSGMGTLLISKIREEYP
+DRIMASFSVVPSPKVSDTVVEPYNATLSVHQLVENTDETFCIDNEALYDICFRTLKLT
+NPTYGDLNHLVSVTMSGVTTCLRFPGQLNADLRKLAVNMVPFPRLHFFMPGFAPLSAK
+GAQAYRASTVAELTQQMFDAKNMMAACDPRHGRYLTVAAMFRGRMSMREVDDQMMSVQ
+NKNSSYFVEWIPNNVKTAVCDIPPRGLKMAATFVGNSTAIQELFKRISEQFTAMFRRK
+AFLHWYTGEGMDEMEFTEAESNMNDLISEYQQYQEATADDMGDLDAEGAEEPYPEE
+
+
+# Tci2
+exonerate --model protein2genome --percent 50 btub.Z96259.protein.fa teladorsagia_circumcincta_tci2_wsi3.0.genome.fa --showtargetgff > exonerate_btub_genome.out
+
+cat exonerate_btub_genome.out | /nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/EVidenceModeler-1.1.1/EvmUtils/misc/Exonerate_to_evm_gff3.pl - > exonerate_btub_genome.out.coords
+
+
+# WASHU
+exonerate --model protein2genome --percent 50 btub.Z96259.protein.fa teladorsagia_circumcincta.PRJNA72569.WBPS17.genomic.fa --showtargetgff > exonerate_btub_WASHUgenome.out
+
+cat exonerate_btub_WASHUgenome.out | /nfs/users/nfs_s/sd21/lustre_link/software/TRANSCRIPTOME/EVidenceModeler-1.1.1/EvmUtils/misc/Exonerate_to_evm_gff3.pl - > exonerate_btub_WASHUgenome.out.coords
+
+
+```
+- the outcome is there is 5 beta-tubulin genes in both our genome and the WASHU genome
+- consistent with what Choi et al report.
+
+
+
+## Calculation of beta-tubulin haplotypes
+- the P198 and P200 variants of beta-tubulin lie very close, and so it is possible to calculate haplotype frequencies
+- more importantly, it is proposed that resistant variants only occur in trans on different strands, and do not occur together on the same strand
+
+```bash
+
+
+for i in *bam; do 
+    samtools view $i tci2_wsi3.0_chr_1:62291010-62291019 |\
+        for j in GAAACATTC GAAACATAC TTAACATTC TTAACATAC; do 
+        echo $i $j ; grep $j  | wc -l; 
+        done ; 
+        done
+
+
+
+for i in ../*bam; do 
+        for j in TTAA...TTCT TGAA...TACT TTTA...TTCT TTTA...TACT; do 
+        echo $i $j ; samtools view -F1024 $i tci2_wsi3.0_chr_1:62291010-62291019 | grep $j  | wc -l; 
+        done ; 
+        done
+
+```
+- data goes into Supplementary table
+- supports the idea that the two resistant variants are only found in trans.
